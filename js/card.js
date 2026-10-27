@@ -10,14 +10,14 @@ const BEVEL = 0.006;
 const CORE = 0.028;
 const FACE_Z = CORE / 2 + PLATE + BEVEL * 2;
 const CHIP = { x: -W / 2 + 1.2, y: H / 2 - 1.6 };
-// The well-known public test number, so the card never shows a real account.
-const NUMBER = ['3782', '822463', '10005'];
+// A well-known public test number, so the card never shows a real account.
+const NUMBER = ['4242', '4242', '4242', '4242'];
 
 // Every finish is grade 5 titanium underneath; the edge is always anodised.
 export const FINISHES = {
   silver: { plate: '#aaa59d', metalness: 1, roughness: 0.34, clearcoat: 0.05, anisotropy: 0.9, env: 1.5, core: '#3a3c40', etch: '#26282c', stripe: '#141517', etchMetal: 0.35, etchRough: 0.62 },
   black: { plate: '#2a2a2d', metalness: 0.9, roughness: 0.38, clearcoat: 0.2, anisotropy: 0.8, env: 2.2, core: '#09090a', etch: '#c3c6cc', stripe: '#050506', etchMetal: 0.9, etchRough: 0.3 },
-  gold: { plate: '#f0cd78', metalness: 1, roughness: 0.3, clearcoat: 0.05, anisotropy: 0.85, env: 2.0, core: '#1c160c', etch: '#2a1d05', stripe: '#141009', etchMetal: 0.4, etchRough: 0.6 },
+  gold: { plate: '#f0cd78', metalness: 1, roughness: 0.3, clearcoat: 0.05, anisotropy: 0.85, env: 2.3, core: '#1c160c', etch: '#2a1d05', stripe: '#141009', etchMetal: 0.4, etchRough: 0.6 },
   white: { plate: '#f3f2ee', metalness: 0.02, roughness: 0.3, clearcoat: 1, anisotropy: 0.02, env: 1.0, core: '#d8d6d0', etch: '#1f2023', stripe: '#1a1b1d', etchMetal: 0.1, etchRough: 0.55 },
 };
 
@@ -161,12 +161,13 @@ function drawFront(canvas, f, name) {
   g.translate((W - 0.5) * k, 0.55 * k);
   g.rotate(Math.PI / 2);
   setFont(g, 700, 0.19 * k, 0.07 * k);
-  g.fillText('TITANIUM  ·  UNOFFICIAL CONCEPT', 0, 0);
+  g.fillText('TITANIUM  ·  HERMES PAY', 0, 0);
   g.restore();
 
-  setFont(g, 800, 0.46 * k, 0.01 * k, 'expanded');
-  g.fillText('AMERICAN', 0.5 * k, (H - 2.05) * k);
-  g.fillText('EXPRESS', 0.5 * k, (H - 1.4) * k);
+  setFont(g, 800, 0.66 * k, 0.01 * k, 'expanded');
+  g.fillText('HERMES', 0.5 * k, (H - 1.55) * k);
+  setFont(g, 700, 0.2 * k, 0.16 * k);
+  g.fillText('CARD', 0.52 * k, (H - 1.15) * k);
 
   setFont(g, 600, 0.27 * k, 0.05 * k);
   g.fillText(name, 0.5 * k, (H - 0.55) * k);
@@ -187,14 +188,14 @@ function drawBack(canvas, f, name) {
   g.fillText('NOT A REAL CARD', x, 0.95 * k);
 
   setFont(g, 600, 0.52 * k, 0.03 * k);
-  NUMBER.forEach((part, i) => g.fillText(part, x, (2.2 + i * 0.72) * k));
+  NUMBER.forEach((part, i) => g.fillText(part, x, (2.2 + i * 0.64) * k));
 
   setFont(g, 600, 0.19 * k, 0.04 * k);
-  g.fillText('VALID THRU', x, 4.55 * k);
-  g.fillText('CID', x + 1.75 * k, 4.55 * k);
+  g.fillText('VALID THRU', x, 4.85 * k);
+  g.fillText('CVC', x + 1.75 * k, 4.85 * k);
   setFont(g, 700, 0.3 * k, 0.04 * k);
-  g.fillText('10/31', x, 4.95 * k);
-  g.fillText('0739', x + 1.75 * k, 4.95 * k);
+  g.fillText('10/31', x, 5.25 * k);
+  g.fillText('739', x + 1.75 * k, 5.25 * k);
 
   setFont(g, 600, 0.24 * k, 0.04 * k);
   g.fillText(name, x, (H - 0.55) * k);

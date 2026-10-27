@@ -8,7 +8,7 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
 const scrub = reduce ? true : 1;
 
-const BG = { silver: '#0a0a0b', black: '#ff4499', gold: '#0a0a0b', white: '#0a0a0b' };
+const BG = { black: '#ff4499', silver: '#0a0a0b', white: '#0a0a0b', gold: '#3a74ff' };
 const NOTE = {
   silver: 'Bead-blasted bare titanium.',
   black: 'Black titanium with a diamond-like carbon coat.',
@@ -39,6 +39,11 @@ function applyFinish(name, animate = true) {
   document.querySelectorAll('[data-finish-btn]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.finishBtn === name)));
   document.querySelectorAll('input[name="finish"]').forEach((i) => { i.checked = i.value === name; });
   note.textContent = NOTE[name];
+  document.querySelectorAll('[data-pick]').forEach((b) => {
+    const mine = b.dataset.pick === name;
+    b.setAttribute('aria-pressed', String(mine));
+    b.textContent = mine ? 'Your finish' : `Choose ${b.dataset.pick}`;
+  });
   themeMeta.content = BG[name];
   try { localStorage.setItem('heavy-metal-finish', name); } catch (e) { /* storage is a convenience only */ }
   card?.setFinish(name, animate);
@@ -61,6 +66,7 @@ function applyFinish(name, animate = true) {
 
 document.querySelectorAll('[data-finish-btn]').forEach((b) => b.addEventListener('click', () => applyFinish(b.dataset.finishBtn)));
 document.querySelectorAll('input[name="finish"]').forEach((i) => i.addEventListener('change', () => applyFinish(i.value)));
+document.querySelectorAll('[data-pick]').forEach((b) => b.addEventListener('click', () => applyFinish(b.dataset.pick)));
 document.querySelector('[data-chooser]').addEventListener('submit', (e) => e.preventDefault());
 
 nameInput.addEventListener('input', () => {
@@ -146,6 +152,13 @@ if (reduce) {
   part('.hero [data-from="right"]', () => window.innerWidth * 0.5);
 }
 
+// The intro line and buttons fade as the hero leaves, so they never pass under the card.
+gsap.fromTo('.hero', { '--fade': 1 }, {
+  '--fade': 0,
+  ease: 'none',
+  scrollTrigger: { trigger: '.hero', start: 'top top', end: '30% top', scrub: true },
+});
+
 /* ---------- The stage: one chapter per screen of scroll ---------- */
 
 const PI = Math.PI;
@@ -154,6 +167,7 @@ const SWIPE = 2; // the chapter where the card swipes off one side and back in f
 
 const DESK = {
   hero: pose({ s: 0.68, rx: -0.12, ry: -0.35, rz: 0.08, idle: 1 }),
+  show: pose({ s: 0.6, rx: -0.1, ry: PI * 2 - 0.3, rz: 0.04, idle: 0.9 }),
   chapters: [
     { in: pose({ s: 0.62, ry: 0.4, rz: -0.04 }), hold: pose({ s: 0.62, ry: -0.35, rx: -0.16 }) },
     { in: pose({ s: 0.5, rx: -0.55, ry: -0.7, rz: 0.12, idle: 0.3 }), hold: pose({ s: 0.46, rx: -0.68, ry: -0.95, rz: 0.14, explode: 1, idle: 0.3 }) },
@@ -164,6 +178,7 @@ const DESK = {
 };
 const PHONE = {
   hero: pose({ s: 0.48, rx: -0.12, ry: -0.35, rz: 0.08, idle: 1 }),
+  show: pose({ s: 0.46, rx: -0.1, ry: PI * 2 - 0.3, rz: 0.04, idle: 0.9 }),
   chapters: [
     { in: pose({ s: 0.44, ry: 0.4, rz: -0.04 }), hold: pose({ s: 0.44, ry: -0.35, rx: -0.16 }) },
     { in: pose({ s: 0.38, rx: -0.55, ry: -0.7, rz: 0.12, idle: 0.3 }), hold: pose({ s: 0.34, rx: -0.68, ry: -0.95, rz: 0.14, explode: 1, idle: 0.3 }) },
@@ -175,13 +190,16 @@ const PHONE = {
 
 const panels = gsap.utils.toArray('[data-panel]');
 const words = panels.map((p) => p.querySelector('[data-drift]'));
+// The stage timeline alone owns each panel's visibility; only the first starts shown.
 gsap.set(panels, { autoAlpha: 0 });
+gsap.set(panels[0], { autoAlpha: 1 });
 
-// The first chapter arrives as the stage rises, once the card has cleared the way.
-gsap.fromTo(panels[0], { autoAlpha: 0 }, {
-  autoAlpha: 1,
+// The first chapter's words arrive as the stage rises, once the card has cleared the way.
+// This fades the panel's contents, not the panel, so it never fights the timeline.
+gsap.fromTo(panels[0].children, { opacity: 0 }, {
+  opacity: 1,
   ease: 'none',
-  immediateRender: false,
+  immediateRender: true,
   scrollTrigger: { trigger: '#card', start: 'top 40%', end: 'top top', scrub },
 });
 
@@ -218,6 +236,22 @@ mm.add({ desk: '(min-width: 768px)', phone: '(max-width: 767.98px)' }, (ctx) => 
   tl.to({}, { duration: 0.05 }, C.length - 0.05);
 
   if (card) {
+    // Into the finish sections: the card settles in the middle, then turns slowly through them.
+    gsap.fromTo(card.pose, { ...C[last].hold }, {
+      ...K.show,
+      ease: 'none',
+      immediateRender: false,
+      scrollTrigger: { trigger: '.showcase', start: 'top bottom', end: 'top top', scrub },
+    });
+    gsap.fromTo(card.pose, { ry: K.show.ry }, {
+      ry: K.show.ry + 0.7,
+      ease: 'none',
+      immediateRender: false,
+      scrollTrigger: { trigger: '.showcase', start: 'top top', end: 'bottom bottom', scrub },
+    });
+  }
+
+  if (card) {
     Object.assign(card.pose, K.hero);
     gsap.fromTo(card.pose, { ...K.hero }, {
       ...C[0].in,
@@ -226,6 +260,31 @@ mm.add({ desk: '(min-width: 768px)', phone: '(max-width: 767.98px)' }, (ctx) => 
       scrollTrigger: { trigger: '#card', start: 'top bottom', end: 'top top', scrub },
     });
   }
+});
+
+/* ---------- Every finish: the card previews each one as its screen arrives ---------- */
+
+gsap.utils.toArray('[data-show]').forEach((panel) => {
+  ScrollTrigger.create({
+    trigger: panel,
+    start: 'top 55%',
+    end: 'bottom 55%',
+    onToggle: (self) => { if (self.isActive) card?.setFinish(panel.dataset.show); },
+  });
+  const word = panel.querySelector('[data-show-word]');
+  gsap.fromTo(word, { xPercent: 18 }, {
+    xPercent: -18,
+    ease: 'none',
+    scrollTrigger: { trigger: panel, start: 'top bottom', end: 'bottom top', scrub: true },
+  });
+});
+// Leaving the sections in either direction, the card returns to the finish you chose.
+ScrollTrigger.create({
+  trigger: '.showcase',
+  start: 'top 55%',
+  end: 'bottom 55%',
+  onLeave: () => card?.setFinish(root.dataset.finish),
+  onLeaveBack: () => card?.setFinish(root.dataset.finish),
 });
 
 /* ---------- Marquee rows swipe in opposite directions ---------- */

@@ -17,10 +17,13 @@
 }
 
 /* Silver, gold and white sit on black; the black card sits on pink. */
-:root[data-finish="silver"] { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --accent: #ff4499; --accent-ink: #0a0a0b; }
-:root[data-finish="white"]  { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --accent: #ff4499; --accent-ink: #0a0a0b; }
-:root[data-finish="gold"]   { --bg: #0a0a0b; --ink: #f2efe6; --soft: #a19c90; --tone: #191713; --accent: #e3b864; --accent-ink: #0a0a0b; }
-:root[data-finish="black"]  { --bg: #ff4499; --ink: #0a0a0b; --soft: #4a1229; --tone: #f0358a; --accent: #0a0a0b; --accent-ink: #ff4499; }
+/* Silver and white sit on black, the black card on pink, the gold card on neon blue. */
+:root[data-finish="silver"], :root[data-finish="white"],
+.show[data-show="silver"], .show[data-show="white"] { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --display-ink: #f2f2f0; --accent: #ff4499; --accent-ink: #0a0a0b; }
+:root[data-finish="black"],
+.show[data-show="black"] { --bg: #ff4499; --ink: #0a0a0b; --soft: #4a1229; --tone: #f0358a; --display-ink: #0a0a0b; --accent: #0a0a0b; --accent-ink: #ff4499; }
+:root[data-finish="gold"],
+.show[data-show="gold"] { --bg: #3a74ff; --ink: #0a0a0b; --soft: #14285a; --tone: #2f66f0; --display-ink: #0a0a0b; --accent: #0a0a0b; --accent-ink: #3a74ff; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -83,6 +86,8 @@ ul { list-style: none; }
 
 /* Everything set in the display voice runs at Archivo's widest. */
 .giant, .h2, .wordmark, .stats dd, .parts, .engrave input, .marquee-row, .spec dd, .footer-name { font-stretch: 125%; }
+
+.giant, .h2, .wordmark, .stats dd { color: var(--display-ink); }
 
 .giant, .h2 {
   font-family: var(--display);
@@ -206,6 +211,9 @@ ul { list-style: none; }
   padding: 0 var(--m);
 }
 .hero .giant { width: 100%; }
+/* Faded by scroll through a filter, so it never fights the entrance animation's opacity. */
+.hero { --fade: 1; }
+.hero [data-intro] { filter: opacity(var(--fade)); }
 .hero-lede { font-size: var(--t-lede); font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
 .hero-actions { display: flex; align-items: center; gap: 24px; }
 
@@ -296,6 +304,24 @@ html:not(.js) .panel { position: relative; height: 100vh; }
 
 .choose-side { display: grid; justify-items: end; gap: 18px; }
 
+/* ---------- Every finish, one screen each ---------- */
+
+.showcase { position: relative; z-index: 1; }
+.show { position: relative; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bg); color: var(--ink); }
+.show-word { position: absolute; left: var(--m); right: var(--m); top: 50%; transform: translateY(-50%); }
+.show-title {
+  font-family: var(--display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: var(--t-stat);
+  line-height: .9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--display-ink);
+  margin-bottom: 14px;
+}
+.show .btn[aria-pressed="true"] { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px currentColor; pointer-events: none; }
+
 /* ---------- Marquee ---------- */
 
 .marquee { background: var(--accent); color: var(--accent-ink); padding: 22px 0; overflow: hidden; }
@@ -320,7 +346,7 @@ html:not(.js) .panel { position: relative; height: 100vh; }
 
 .footer { background: var(--accent); color: var(--accent-ink); padding: clamp(80px, 9vw, 140px) var(--m) 32px; }
 .footer-name { font-family: var(--display); font-weight: 900; text-transform: uppercase; letter-spacing: -0.045em; line-height: .84; }
-.footer-bottom { margin-top: clamp(48px, 6vw, 96px); display: flex; justify-content: space-between; gap: 40px; font-size: var(--t-small); }
+.footer-bottom { margin-top: clamp(48px, 6vw, 96px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px 40px; font-size: var(--t-small); }
 .footer-bottom p { max-width: 62ch; }
 .footer-links { display: flex; gap: 24px; font-weight: 700; }
 .footer-links a { text-decoration: none; }
