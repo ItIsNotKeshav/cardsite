@@ -1,2 +1,5 @@
 .taste-skill/
 .claude/worktrees/
+
+.vercel
+.env*
