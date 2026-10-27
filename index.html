@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Obverse — a steel card with nothing on its face</title>
-  <meta name="description" content="Obverse is a 28-gram steel credit card with nothing printed on its face except your name. In silver, black, gold or white.">
-  <meta name="theme-color" content="#BB4400">
+  <title>Obverse Ti — a titanium credit card</title>
+  <meta name="description" content="Obverse Ti is a credit card machined from grade 5 titanium. Fifteen grams, an anodised edge, and nothing on its face but your name.">
+  <meta name="theme-color" content="#DDEE55">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script type="importmap">
     {
@@ -20,156 +20,162 @@
   </script>
   <script>
     try {
-      var f = localStorage.getItem('obverse-finish');
+      var f = localStorage.getItem('obverse-ti-finish');
       if (['silver', 'black', 'gold', 'white'].indexOf(f) > -1) document.documentElement.dataset.finish = f;
     } catch (e) {}
     document.documentElement.classList.add('js');
   </script>
 </head>
 <body>
-  <a class="skip" href="#history">Skip to the story</a>
+  <a class="skip" href="#story">Skip to the story</a>
 
   <header class="nav" data-nav>
-    <a class="wordmark" href="#top">Obverse</a>
+    <a class="lockup" href="#top"><span class="tile" aria-hidden="true">Ti</span><span>Obverse</span></a>
     <nav class="nav-links" aria-label="Sections">
-      <a href="#history">Story</a>
+      <a href="#story">Story</a>
       <a href="#card">The card</a>
       <a href="#membership">Membership</a>
       <a href="#faq">Questions</a>
     </nav>
     <div class="dots" role="group" aria-label="Card finish">
-      <button type="button" data-finish-btn="silver" aria-label="Silver finish" title="Silver"><span class="dot" style="--disc:#c9ccd1"></span></button>
-      <button type="button" data-finish-btn="black" aria-label="Black finish" title="Black"><span class="dot" style="--disc:#1e1e21"></span></button>
-      <button type="button" data-finish-btn="gold" aria-label="Gold finish" title="Gold"><span class="dot" style="--disc:#e2b660"></span></button>
-      <button type="button" data-finish-btn="white" aria-label="White finish" title="White"><span class="dot" style="--disc:#f2f1ed"></span></button>
+      <button type="button" data-finish-btn="silver" aria-label="Silver titanium" title="Silver"><span class="dot" style="--disc:#b4b2ae"></span></button>
+      <button type="button" data-finish-btn="black" aria-label="Black titanium" title="Black"><span class="dot" style="--disc:#232326"></span></button>
+      <button type="button" data-finish-btn="gold" aria-label="Gold titanium" title="Gold"><span class="dot" style="--disc:#d9b25a"></span></button>
+      <button type="button" data-finish-btn="white" aria-label="White ceramic titanium" title="White"><span class="dot" style="--disc:#f3f2ee"></span></button>
     </div>
     <a class="btn btn-nav" href="#choose">Request</a>
   </header>
 
-  <canvas class="stage" id="stage" aria-hidden="true"></canvas>
+  <canvas class="canvas" id="canvas" aria-hidden="true"></canvas>
 
   <main>
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero-type">
-        <h1 class="hero-title display" id="hero-title" aria-label="Face value">
-          <span class="line l1" data-split>Face</span>
-          <span class="line l2" data-split>value</span>
-        </h1>
-        <p class="hero-side hero-side-r" data-intro>Steel credit card,<br>28 grams</p>
-        <p class="hero-side hero-side-l" data-intro>In silver, black,<br>gold or white</p>
-      </div>
-      <div class="hero-foot">
-        <p class="hero-lede" data-intro>Obverse is a steel credit card with nothing printed on its face but your name.</p>
+      <div class="hero-top">
+        <p class="hero-lede" data-intro>Obverse Ti is a credit card machined from grade 5 titanium. Fifteen grams, with nothing on its face but your name.</p>
         <div class="hero-actions" data-intro>
           <a class="btn btn-invert" href="#choose">Request your card <span aria-hidden="true">→</span></a>
-          <a class="link" href="#history">Read the story</a>
+          <a class="link" href="#story">Read the story</a>
+        </div>
+      </div>
+      <h1 class="hero-word display" id="hero-title"><span data-fit>Titanium</span></h1>
+    </section>
+
+    <section class="timeline curtain" id="story" aria-labelledby="story-title">
+      <div class="timeline-pin">
+        <div class="timeline-track" data-track>
+          <article class="tl-intro">
+            <h2 class="h2" id="story-title">Named for the Titans</h2>
+            <p class="lede">Titanium is the ninth most common element in the Earth's crust, and for 150 years almost nobody could get it out. This is how it went from black sand to a card.</p>
+            <p class="tl-hint">Keep scrolling <span aria-hidden="true">→</span></p>
+          </article>
+
+          <article class="tl-item">
+            <figure class="tl-figure"><img src="assets/ilmenite-sand.jpg" width="1920" height="1440" alt="A heap of fine black ilmenite sand on a clear acrylic block."></figure>
+            <h3 class="year display">1791</h3>
+            <p>William Gregor, a Cornish clergyman, finds an unknown metal in the black sand of a stream near Manaccan.</p>
+            <p class="caption">Ilmenite sand, the ore Gregor studied. Guangdong Museum.</p>
+          </article>
+
+          <article class="tl-item tl-tall">
+            <figure class="tl-figure"><img src="assets/ambroise-tardieu23.jpg" width="1000" height="1814" loading="lazy" alt="Engraved profile portrait of the chemist Martin Heinrich Klaproth in an oval frame."></figure>
+            <h3 class="year display">1795</h3>
+            <p>Martin Heinrich Klaproth finds it again in rutile and names it after the Titans of Greek myth.</p>
+            <p class="caption">Klaproth, engraved by Ambroise Tardieu.</p>
+          </article>
+
+          <article class="tl-item">
+            <figure class="tl-figure"><img src="assets/titan-crystal-bar.jpg" width="1920" height="1206" loading="lazy" alt="A bar of pure titanium covered in bright faceted crystals."></figure>
+            <h3 class="year display">1925</h3>
+            <p>Van Arkel and de Boer grow the first truly pure titanium, crystal by crystal, from titanium iodide on a glowing wire.</p>
+            <p class="caption">A titanium crystal bar made by the iodide process.</p>
+          </article>
+
+          <article class="tl-item">
+            <figure class="tl-figure"><img src="assets/titanium-sponge-cylinder-120-grams.jpg" width="1000" height="1000" loading="lazy" alt="Close-up of grey, porous titanium sponge."></figure>
+            <h3 class="year display">1940</h3>
+            <p>William Kroll reduces it with magnesium. His process, and its grey sponge, still makes almost all the titanium in the world.</p>
+            <p class="caption">Titanium sponge from the Kroll process.</p>
+          </article>
+
+          <article class="tl-item tl-wide">
+            <figure class="tl-figure"><img src="assets/lockheed-sr-71-blackbird.jpg" width="1920" height="1504" loading="lazy" alt="A black SR-71 Blackbird flying over snow-covered mountains."></figure>
+            <h3 class="year display">1964</h3>
+            <p>The SR-71 Blackbird flies for the first time. Its airframe is mostly titanium, because at Mach 3 its skin runs hotter than 260 °C.</p>
+            <p class="caption">NASA's SR-71B over the Sierra Nevada, 1994.</p>
+          </article>
+
+          <article class="tl-end">
+            <h3 class="year display">Now</h3>
+            <p class="lede">Fifteen grams of grade 5 titanium, the alloy aircraft are built from today, cut to the size of a card.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="history curtain" id="history" aria-labelledby="history-title">
-      <div class="grid">
-        <div class="history-head" data-reveal>
-          <h2 class="h2" id="history-title">Money has two faces</h2>
-        </div>
-        <p class="history-intro lede" data-reveal-self>For 2,600 years the front of money, its obverse, has carried the face of whoever made it. Emperors, kings, gods. The reverse said what it was worth.</p>
+    <section class="stage" id="card" aria-label="The card">
+      <span class="stage-mark" id="choose" aria-hidden="true"></span>
+      <div class="stage-pin">
+        <ul class="rail" aria-hidden="true">
+          <li data-rail>Weight</li>
+          <li data-rail>Layers</li>
+          <li data-rail>Edge</li>
+          <li data-rail>Reverse</li>
+          <li data-rail>Your finish</li>
+        </ul>
 
-        <figure class="coin coin-hero">
-          <div class="frame"><img src="assets/aureus-coin-portraying-emperor-otho.jpg" width="1436" height="798" alt="Gold aureus shown from both sides: the head of Emperor Otho on the left, a standing goddess holding a wreath on the right."></div>
-          <figcaption>Aureus of Emperor Otho, Rome, 69 CE. Obverse left, reverse right.</figcaption>
-        </figure>
-
-        <figure class="coin coin-a">
-          <div class="frame"><img src="assets/coin-of-kushan-empire-king-vasudeva-i.jpg" width="1920" height="955" loading="lazy" alt="Gold coin of King Vasudeva I from both sides: the king standing at an altar, and a god with a bull."></div>
-          <figcaption>Vasudeva I, Kushan Empire.</figcaption>
-        </figure>
-        <figure class="coin coin-b">
-          <div class="frame"><img src="assets/coin-havishka-reverse.jpg" width="1920" height="962" loading="lazy" alt="Gold coin of King Havishka from both sides: a crowned half-length portrait, and a standing figure holding a wreath."></div>
-          <figcaption>Havishka, Kushan Empire.</figcaption>
-        </figure>
-
-        <p class="history-turn statement" data-reveal-self>We turned it around. The front of an Obverse card carries one face: yours.</p>
-        <figure class="coin coin-c">
-          <div class="frame"><img src="assets/coin-with-figure-of-an-archer-obverse.jpg" width="1920" height="947" loading="lazy" alt="Gold coin of Chandragupta II from both sides: the king as an archer, and the goddess Lakshmi seated on a lotus."></div>
-          <figcaption>Chandragupta II as an archer, Gupta period, around 400 CE.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section class="chapter" id="card" data-side="left" aria-labelledby="card-title">
-      <div class="chapter-pin">
-        <div class="chapter-copy" data-reveal>
-          <h2 class="h2" id="card-title">The front is yours</h2>
-          <p class="lede">No number, no expiry date, no bank logo the size of a billboard. Brushed steel, a chip, and your name, cut into the metal by laser.</p>
-          <ul class="facts">
-            <li>Engraved, not printed, so your name never wears off</li>
-            <li>Pays by tap or chip anywhere cards are taken</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="chapter" id="weight" data-side="right" aria-labelledby="weight-title">
-      <div class="chapter-pin">
-        <div class="chapter-copy" data-reveal>
-          <h2 class="h2" id="weight-title">Feel the weight</h2>
-          <p class="figure display"><span data-count="28">28</span>&thinsp;g</p>
-          <p class="lede">A plastic card weighs about five grams. Obverse is 28 grams of stainless steel, and it lands on a counter with a sound you will learn to recognise.</p>
-          <dl class="specs">
-            <div><dt>Thickness</dt><dd>0.8 mm</dd></div>
-            <div><dt>Size</dt><dd>85.6 × 54 mm</dd></div>
-            <div><dt>Steel</dt><dd>316L stainless</dd></div>
+        <div class="panel" data-panel>
+          <h2 class="h2 panel-title">Lighter than steel</h2>
+          <p class="panel-text lede">Titanium is about 40% lighter than steel and just as strong. The card weighs 15 grams, and still lands on a table like it means it.</p>
+          <dl class="panel-side stats">
+            <div><dt>Per card</dt><dd>15 g</dd></div>
+            <div><dt>Density, steel is 7.9</dt><dd>4.5</dd></div>
+            <div><dt>Melting point</dt><dd>1,668°</dd></div>
           </dl>
         </div>
-      </div>
-    </section>
 
-    <section class="chapter chapter-long" id="layers" data-side="left" aria-labelledby="layers-title">
-      <div class="chapter-pin">
-        <div class="chapter-copy" data-reveal>
-          <h2 class="h2" id="layers-title">Built in layers</h2>
-          <p class="lede">Four parts, pressed together under heat, then cut to shape in 96 passes of a fibre laser.</p>
-          <ul class="facts facts-strong">
-            <li><strong>Steel face</strong> brushed in one direction</li>
-            <li><strong>Carbon core</strong> carrying the contactless antenna</li>
-            <li><strong>Gold-plated chip</strong> set flush with the steel</li>
-            <li><strong>Steel back</strong> etched with your number</li>
+        <div class="panel" data-panel>
+          <h2 class="h2 panel-title">Four parts, one card</h2>
+          <p class="panel-text lede">A titanium face and back, a carbon core that carries the contactless antenna, and a gold-plated chip, bonded under heat and pressure.</p>
+          <ul class="panel-side parts">
+            <li><strong>Titanium face</strong> bead-blasted to a satin grain</li>
+            <li><strong>Carbon core</strong> lets the antenna reach the reader</li>
+            <li><strong>Gold-plated chip</strong> set flush with the metal</li>
+            <li><strong>Titanium back</strong> laser-marked with your number</li>
           </ul>
         </div>
-      </div>
-    </section>
 
-    <section class="chapter chapter-long" id="reverse" data-side="right" aria-labelledby="reverse-title">
-      <div class="chapter-pin">
-        <div class="chapter-copy" data-reveal>
-          <h2 class="h2" id="reverse-title">Turn it over</h2>
-          <p class="lede">Your card number, expiry and security code live on the back, out of sight across a café table. Online, the app makes a new virtual number for every shop you pay.</p>
-          <ul class="facts">
-            <li>Freeze and unfreeze the card with one tap</li>
-            <li>Spend in 73 currencies at the real exchange rate</li>
+        <div class="panel" data-panel>
+          <h2 class="h2 panel-title">An anodised edge</h2>
+          <p class="panel-text lede">Pass a current through titanium and it grows a film of oxide a few hundred nanometres thick. Light reflecting inside that film turns the metal blue, gold or violet.</p>
+          <p class="panel-side aside">No dye and no paint. The colour on the edge of every card comes from light alone.</p>
+        </div>
+
+        <div class="panel" data-panel>
+          <h2 class="h2 panel-title">Turn it over</h2>
+          <p class="panel-text lede">Card number, expiry and security code are laser-marked on the back, out of sight across a café table. Online, the app makes a new number for every shop.</p>
+          <ul class="panel-side parts">
+            <li><strong>Freeze it</strong> with one tap, and undo it with another</li>
+            <li><strong>Pay abroad</strong> at the real exchange rate</li>
           </ul>
         </div>
-      </div>
-    </section>
 
-    <section class="chapter chapter-choose" id="choose" data-side="left" aria-labelledby="choose-title">
-      <div class="chapter-pin">
-        <form class="chapter-copy chooser" data-reveal data-chooser>
-          <h2 class="h2" id="choose-title">Choose your face</h2>
-          <p class="lede">Four finishes, one weight. Pick one, put your name on it, and watch the card change as you do.</p>
-          <fieldset class="finishes">
-            <legend class="sr-only">Finish</legend>
-            <label class="finish"><input type="radio" name="finish" value="silver"><span class="disc" style="--disc:#c9ccd1"></span><span><strong>Silver</strong><span class="finish-note">Brushed stainless steel</span></span></label>
-            <label class="finish"><input type="radio" name="finish" value="black"><span class="disc" style="--disc:#1e1e21"></span><span><strong>Black</strong><span class="finish-note">Matte black coated steel</span></span></label>
-            <label class="finish"><input type="radio" name="finish" value="gold"><span class="disc" style="--disc:#e2b660"></span><span><strong>Gold</strong><span class="finish-note">Gold-tone coated steel</span></span></label>
-            <label class="finish"><input type="radio" name="finish" value="white"><span class="disc" style="--disc:#f2f1ed"></span><span><strong>White</strong><span class="finish-note">Ceramic over a steel core</span></span></label>
-          </fieldset>
-          <div class="engrave">
-            <label for="engrave">Name on the card</label>
-            <input id="engrave" name="engrave" type="text" maxlength="22" autocomplete="name" spellcheck="false" placeholder="YOUR NAME">
-          </div>
-          <a class="btn" data-request href="mailto:hello@obverse.example?subject=Obverse%20card%20request">Request this card <span aria-hidden="true">→</span></a>
-        </form>
+        <div class="panel panel-choose" data-panel>
+          <form class="chooser" data-chooser>
+            <h2 class="h2">Choose your face</h2>
+            <fieldset class="finishes">
+              <legend class="sr-only">Finish</legend>
+              <label class="finish"><input type="radio" name="finish" value="silver"><span class="disc" style="--disc:#b4b2ae"></span><span><strong>Silver</strong><span class="finish-note">Bead-blasted bare titanium</span></span></label>
+              <label class="finish"><input type="radio" name="finish" value="black"><span class="disc" style="--disc:#232326"></span><span><strong>Black</strong><span class="finish-note">Diamond-like carbon coat</span></span></label>
+              <label class="finish"><input type="radio" name="finish" value="gold"><span class="disc" style="--disc:#d9b25a"></span><span><strong>Gold</strong><span class="finish-note">Titanium nitride, gold in colour</span></span></label>
+              <label class="finish"><input type="radio" name="finish" value="white"><span class="disc" style="--disc:#f3f2ee"></span><span><strong>White</strong><span class="finish-note">Ceramic over titanium</span></span></label>
+            </fieldset>
+            <div class="engrave">
+              <label for="engrave">Name on the card</label>
+              <input id="engrave" name="engrave" type="text" maxlength="22" autocomplete="name" spellcheck="false" placeholder="YOUR NAME">
+            </div>
+            <a class="btn" data-request href="mailto:hello@obverse.example?subject=Obverse%20Ti%20request">Request this card <span aria-hidden="true">→</span></a>
+          </form>
+        </div>
       </div>
     </section>
 
@@ -177,17 +183,17 @@
       <div class="grid">
         <div class="membership-price" data-reveal>
           <h2 class="h2" id="membership-title">One membership</h2>
-          <p class="price display">$96</p>
+          <p class="price display">$79</p>
           <p class="lede">A year, with everything on this list included. Cancel in any month and we refund the months you did not use.</p>
-          <a class="btn btn-invert" href="#choose">Request your card <span aria-hidden="true">→</span></a>
+          <a class="btn btn-pop" href="#choose">Request your card <span aria-hidden="true">→</span></a>
         </div>
         <ul class="included" data-reveal>
-          <li><strong>The steel card</strong> in the finish you choose, engraved with your name</li>
+          <li><strong>The titanium card</strong> in the finish you choose, engraved with your name</li>
           <li><strong>1.9% back</strong> on every purchase, paid out monthly</li>
-          <li><strong>73 currencies</strong> at the real exchange rate, with no foreign fees</li>
+          <li><strong>The real exchange rate</strong> in 73 currencies, with no foreign fees</li>
           <li><strong>Virtual numbers</strong> made fresh for every online shop</li>
           <li><strong>Lost it?</strong> A replacement in your hand within two days</li>
-          <li><strong>A new finish</strong> once a year, free; we recycle the old steel</li>
+          <li><strong>A new finish</strong> once a year, free; we recycle the old titanium</li>
         </ul>
       </div>
     </section>
@@ -197,20 +203,20 @@
         <h2 class="h2 faq-title" id="faq-title">Questions</h2>
         <div class="faq-list" data-reveal>
           <details>
-            <summary>Does contactless work through steel?</summary>
-            <p>Yes. The antenna sits in the carbon core and the steel is cut around it, so the card pays by tap at any contactless terminal, the same as plastic.</p>
+            <summary>Does contactless work through titanium?</summary>
+            <p>Yes. The antenna sits in the carbon core and the metal is cut around it, so the card pays by tap at any contactless terminal.</p>
+          </details>
+          <details>
+            <summary>Will the edge colour wear off?</summary>
+            <p>The colour is the oxide itself, not a coating on top of it. Years of pockets and wallets soften it slightly; it never flakes.</p>
           </details>
           <details>
             <summary>Can I change the finish later?</summary>
-            <p>Once a year at no cost. Send the old card back in the sleeve we include and we recycle its steel.</p>
+            <p>Once a year at no cost. Send the old card back in the sleeve we include and we recycle its titanium.</p>
           </details>
           <details>
             <summary>What happens if I lose it?</summary>
             <p>Freeze it in the app straight away. A replacement reaches you within two days, and your virtual numbers keep working in the meantime.</p>
-          </details>
-          <details>
-            <summary>Why is the number on the back?</summary>
-            <p>Because the front is the side people see. Keeping the number, expiry and code on the reverse means a glance across a table shows your name and nothing else.</p>
           </details>
           <details>
             <summary>Is Obverse a real card?</summary>
@@ -223,19 +229,19 @@
 
   <footer class="footer curtain">
     <div class="footer-top">
-      <p class="footer-line lede">Money has two faces. Make the front one yours.</p>
+      <p class="footer-line lede">From black sand in a Cornish stream to fifteen grams in your pocket.</p>
       <nav class="footer-links" aria-label="Footer">
-        <a href="#history">Story</a>
+        <a href="#story">Story</a>
         <a href="#card">The card</a>
         <a href="#membership">Membership</a>
         <a href="#faq">Questions</a>
         <a href="#choose">Request a card</a>
       </nav>
     </div>
-    <p class="footer-name display" aria-hidden="true"><span data-fit>Obverse</span></p>
+    <p class="footer-name display" aria-hidden="true"><span data-fit>Obverse Ti</span></p>
     <div class="footer-bottom">
       <p>Obverse is a design concept. It is not a bank, nothing here is a financial offer, and the card details shown are invented.</p>
-      <p class="credits">Pictures: <a href="https://www.artic.edu/artworks/5616">“Aureus (Coin) Portraying Emperor Otho”</a>, Ancient Roman, 69 CE, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, via the Art Institute of Chicago; <a href="https://commons.wikimedia.org/wiki/File:Gold_coin_of_the_Kushan_empire,_king_Vasudeva_I.jpg">“Coin of Kushan empire, King Vasudeva I”</a>, <a href="https://commons.wikimedia.org/wiki/File:Gold_coin_of_the_Kushan_empire,_king_Havishka_-_1999.227_-_Cleveland_Museum_of_Art.jpg">“Coin: Havishka”</a> and <a href="https://commons.wikimedia.org/wiki/File:India,_Chandragupta_II,_Gupta_Period_-_Coin_with_Figure_of_an_Archer_-_1977.62_-_Cleveland_Museum_of_Art.jpg">“Coin with Figure of an Archer”</a>, Cleveland Museum of Art, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, via Wikimedia Commons.</p>
+      <p class="credits">Pictures: <a href="https://commons.wikimedia.org/wiki/File:Ilmenite_sand.jpg">“Ilmenite sand”</a> by Mx. Granger, CC0; <a href="https://commons.wikimedia.org/wiki/File:Ambroise_Tardieu23.jpg">Klaproth by Ambroise Tardieu</a>, public domain; <a href="https://commons.wikimedia.org/wiki/File:Titan-crystal_bar.JPG">“Titan-crystal bar”</a> by Alchemist-hp, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Titanium_sponge_cylinder,_120_grams.jpg">“Titanium sponge cylinder”</a> by Hi-Res Images of Chemical Elements, <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Lockheed_SR-71_Blackbird.jpg">“Lockheed SR-71 Blackbird”</a> by Judson Brohmer, USAF/NASA, public domain. All via Wikimedia Commons.</p>
     </div>
   </footer>
 

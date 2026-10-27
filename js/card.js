@@ -12,11 +12,12 @@ const CORE = 0.028;
 const FACE_Z = CORE / 2 + PLATE + BEVEL * 2;
 const NUMBER = '4965  9628  1991  4096';
 
+// Every finish is grade 5 titanium underneath; the edge is always anodised.
 export const FINISHES = {
-  silver: { plate: '#c9ccd1', metalness: 1, roughness: 0.46, clearcoat: 0.05, anisotropy: 0.85, env: 1.15, core: '#2a2c30', etch: '#2b2f35', stripe: '#121315', etchMetal: 0.35, etchRough: 0.62 },
-  black: { plate: '#2a2a2e', metalness: 0.85, roughness: 0.5, clearcoat: 0.5, anisotropy: 0.3, env: 2.1, core: '#08080a', etch: '#c4c5c9', stripe: '#050506', etchMetal: 0.9, etchRough: 0.32 },
-  gold: { plate: '#e2b660', metalness: 1, roughness: 0.4, clearcoat: 0.05, anisotropy: 0.8, env: 1.15, core: '#1c160c', etch: '#573d12', stripe: '#141009', etchMetal: 0.4, etchRough: 0.6 },
-  white: { plate: '#f2f1ed', metalness: 0.02, roughness: 0.34, clearcoat: 1, anisotropy: 0.05, env: 1.0, core: '#dcdad4', etch: '#232427', stripe: '#1a1b1d', etchMetal: 0.1, etchRough: 0.55 },
+  silver: { plate: '#a19f9b', metalness: 1, roughness: 0.44, clearcoat: 0.08, anisotropy: 0.25, env: 1.25, core: '#3a3c40', etch: '#2a2c30', stripe: '#141517', etchMetal: 0.35, etchRough: 0.62 },
+  black: { plate: '#232326', metalness: 0.85, roughness: 0.55, clearcoat: 0.35, anisotropy: 0.15, env: 2.0, core: '#09090a', etch: '#b9bcc2', stripe: '#050506', etchMetal: 0.9, etchRough: 0.3 },
+  gold: { plate: '#d9b25a', metalness: 1, roughness: 0.34, clearcoat: 0.1, anisotropy: 0.2, env: 1.2, core: '#1c160c', etch: '#4f370f', stripe: '#141009', etchMetal: 0.4, etchRough: 0.6 },
+  white: { plate: '#f3f2ee', metalness: 0.02, roughness: 0.32, clearcoat: 1, anisotropy: 0.02, env: 1.0, core: '#d8d6d0', etch: '#1f2023', stripe: '#1a1b1d', etchMetal: 0.1, etchRough: 0.55 },
 };
 
 function cardShape(inset = 0) {
@@ -60,16 +61,22 @@ function slab(depth, bevel, inset = 0) {
   return cardUVs(g);
 }
 
-function brushedCanvas() {
+// Bead-blasted titanium: a fine, even grain rather than brush lines.
+function grainCanvas() {
   const c = document.createElement('canvas');
   c.width = c.height = 1024;
   const g = c.getContext('2d');
-  g.fillStyle = '#c8c8c8';
-  g.fillRect(0, 0, 1024, 1024);
-  for (let i = 0; i < 9000; i++) {
-    const v = (170 + Math.random() * 70) | 0;
-    g.fillStyle = `rgba(${v},${v},${v},${0.12 + Math.random() * 0.25})`;
-    g.fillRect(Math.random() * 1224 - 200, Math.random() * 1024, 160 + Math.random() * 900, Math.random() < 0.85 ? 1 : 2);
+  const img = g.createImageData(1024, 1024);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = 175 + Math.random() * 70;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  for (let i = 0; i < 1400; i++) {
+    const v = (190 + Math.random() * 60) | 0;
+    g.fillStyle = `rgba(${v},${v},${v},${0.08 + Math.random() * 0.12})`;
+    g.fillRect(Math.random() * 1224 - 200, Math.random() * 1024, 200 + Math.random() * 700, 1);
   }
   return c;
 }
@@ -106,22 +113,22 @@ function chipCanvas() {
   return c;
 }
 
-function setFont(g, weight, px, spacing, stretch = 'normal') {
-  g.font = `${weight} ${px}px Archivo, Arial, sans-serif`;
-  g.fontStretch = stretch;
+function setFont(g, weight, px, spacing, family = 'Barlow') {
+  g.font = `${weight} ${px}px "${family}", Arial, sans-serif`;
   g.letterSpacing = `${spacing}px`;
 }
 
-// The brand mark: one coin, half struck. Obverse and reverse in a single circle.
-function emblem(g, x, y, r) {
-  g.lineWidth = r * 0.16;
-  g.beginPath();
-  g.arc(x, y, r, 0, Math.PI * 2);
-  g.stroke();
-  g.beginPath();
-  g.arc(x, y, r, Math.PI / 2, Math.PI * 1.5);
-  g.closePath();
-  g.fill();
+// The mark: titanium's tile from the periodic table, laser-etched.
+function tile(g, x, y, size) {
+  g.lineWidth = size * 0.06;
+  g.strokeRect(x, y, size, size);
+  g.textAlign = 'left';
+  setFont(g, 600, size * 0.2, 0);
+  g.fillText('22', x + size * 0.12, y + size * 0.28);
+  g.textAlign = 'center';
+  setFont(g, 700, size * 0.56, 0, 'Barlow Condensed');
+  g.fillText('Ti', x + size * 0.5, y + size * 0.84);
+  g.textAlign = 'left';
 }
 
 function drawFront(canvas, f, name) {
@@ -132,8 +139,8 @@ function drawFront(canvas, f, name) {
   g.textBaseline = 'alphabetic';
   g.textAlign = 'left';
 
-  setFont(g, 800, 0.4 * k, 0.01 * k, 'expanded');
-  g.fillText('OBVERSE', 0.62 * k, 0.98 * k);
+  setFont(g, 700, 0.5 * k, 0.03 * k, 'Barlow Condensed');
+  g.fillText('OBVERSE', 0.62 * k, 1.02 * k);
 
   g.lineWidth = 0.07 * k;
   g.lineCap = 'round';
@@ -144,9 +151,9 @@ function drawFront(canvas, f, name) {
     g.stroke();
   }
 
-  setFont(g, 600, 0.34 * k, 0.05 * k);
+  setFont(g, 600, 0.32 * k, 0.05 * k);
   g.fillText(name, 0.62 * k, (H - 0.62) * k);
-  emblem(g, (W - 0.98) * k, (H - 0.86) * k, 0.36 * k);
+  tile(g, (W - 1.52) * k, (H - 1.52) * k, 0.9 * k);
 }
 
 function drawBack(canvas, f, name) {
@@ -159,53 +166,76 @@ function drawBack(canvas, f, name) {
 
   g.fillStyle = g.strokeStyle = f.etch;
   g.textAlign = 'right';
-  setFont(g, 500, 0.17 * k, 0.03 * k);
-  g.fillText('STEEL  ·  28 G  ·  ISSUED TO THE NAME BELOW', (W - 0.62) * k, 2.3 * k);
+  setFont(g, 600, 0.17 * k, 0.03 * k);
+  g.fillText('GRADE 5 TITANIUM  ·  15 G  ·  ISSUED TO THE NAME BELOW', (W - 0.62) * k, 2.3 * k);
   g.textAlign = 'left';
 
-  setFont(g, 500, 0.46 * k, 0.06 * k);
-  g.fillText(NUMBER, 0.62 * k, 3.06 * k);
+  setFont(g, 500, 0.5 * k, 0.05 * k, 'Barlow Condensed');
+  g.fillText(NUMBER, 0.62 * k, 3.1 * k);
   setFont(g, 500, 0.2 * k, 0.03 * k);
-  g.fillText('VALID THRU  10/31', 0.62 * k, 3.6 * k);
-  g.fillText('SECURITY CODE  739', 3.4 * k, 3.6 * k);
+  g.fillText('VALID THRU  10/31', 0.62 * k, 3.62 * k);
+  g.fillText('SECURITY CODE  739', 3.4 * k, 3.62 * k);
 
   setFont(g, 600, 0.3 * k, 0.05 * k);
   g.fillText(name, 0.62 * k, (H - 0.62) * k);
-  emblem(g, (W - 0.98) * k, (H - 0.86) * k, 0.36 * k);
+  tile(g, (W - 1.52) * k, (H - 1.52) * k, 0.9 * k);
 }
 
 export function createCard(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  if (!renderer.getContext()) throw new Error('WebGL unavailable');
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
-  renderer.toneMappingExposure = 1;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.VSMShadowMap;
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
   pmrem.dispose();
 
-  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  const key = new THREE.DirectionalLight(0xffffff, 1.1);
   key.position.set(-6, 9, 12);
-  scene.add(key);
   const rim = new THREE.DirectionalLight(0xffffff, 0.9);
   rim.position.set(8, -4, -6);
-  scene.add(rim);
 
-  const camera = new THREE.PerspectiveCamera(28, 1, 5, 80);
+  // A near-frontal light whose only job is to cast the floating card onto the page behind it.
+  const caster = new THREE.DirectionalLight(0xffffff, 0.25);
+  caster.position.set(-3, 5, 22);
+  caster.castShadow = true;
+  caster.shadow.mapSize.set(2048, 2048);
+  caster.shadow.radius = 18;
+  caster.shadow.blurSamples = 24;
+  caster.shadow.bias = -0.0005;
+  Object.assign(caster.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 60 });
+  scene.add(key, rim, caster);
+
+  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.ShadowMaterial({ opacity: 0.22 })); // taste-skill-ignore: rendered light under a floating object
+  catcher.position.z = -7;
+  catcher.receiveShadow = true;
+  scene.add(catcher);
+
+  const camera = new THREE.PerspectiveCamera(28, 1, 5, 120);
   camera.position.set(0, 0, 34);
 
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
 
-  const brushed = new THREE.CanvasTexture(brushedCanvas());
-  brushed.wrapS = brushed.wrapT = THREE.RepeatWrapping;
-  brushed.repeat.set(1 / W, 1 / H);
-  brushed.offset.set(0.5, 0.5);
-  brushed.anisotropy = maxAniso;
+  const grain = new THREE.CanvasTexture(grainCanvas());
+  grain.wrapS = grain.wrapT = THREE.RepeatWrapping;
+  grain.repeat.set(1 / W, 1 / H);
+  grain.offset.set(0.5, 0.5);
+  grain.anisotropy = maxAniso;
 
-  const plateMat = new THREE.MeshPhysicalMaterial({ roughnessMap: brushed, anisotropyRotation: 0 });
+  const plateMat = new THREE.MeshPhysicalMaterial({ roughnessMap: grain, anisotropyRotation: 0, clearcoatRoughness: 0.35 });
+  const edgeMat = new THREE.MeshPhysicalMaterial({
+    color: '#9aa0aa',
+    metalness: 1,
+    roughness: 0.22,
+    iridescence: 1,
+    iridescenceIOR: 2.3,
+    iridescenceThicknessRange: [260, 620],
+    envMapIntensity: 2.4,
+  });
   const coreMat = new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0.1 });
 
   const chipTex = new THREE.CanvasTexture(chipCanvas());
@@ -238,12 +268,13 @@ export function createCard(canvas) {
 
   const plateGeo = slab(PLATE, BEVEL);
   const faceGeo = cardUVs(new THREE.ShapeGeometry(cardShape(0.02), 24));
+  const plateMats = [plateMat, edgeMat]; // extrude groups: caps, sides
 
   const card = new THREE.Group();
   scene.add(card);
 
   const front = new THREE.Group();
-  const frontPlate = new THREE.Mesh(plateGeo, plateMat);
+  const frontPlate = new THREE.Mesh(plateGeo, plateMats);
   frontPlate.position.z = CORE / 2 + BEVEL + PLATE / 2;
   const frontFace = new THREE.Mesh(faceGeo, frontEtch);
   frontFace.position.z = FACE_Z + 0.0008;
@@ -253,7 +284,7 @@ export function createCard(canvas) {
   front.add(frontPlate, frontFace, chip);
 
   const back = new THREE.Group();
-  const backPlate = new THREE.Mesh(plateGeo, plateMat);
+  const backPlate = new THREE.Mesh(plateGeo, plateMats);
   backPlate.position.z = -(CORE / 2 + BEVEL + PLATE / 2);
   const backFace = new THREE.Mesh(faceGeo, backEtch);
   backFace.rotation.y = Math.PI;
@@ -263,9 +294,10 @@ export function createCard(canvas) {
 
   const core = new THREE.Mesh(slab(CORE, 0, 0.012), coreMat);
   card.add(back, core, front);
+  [frontPlate, backPlate, core, chip].forEach((m) => { m.castShadow = true; });
 
   // Driven from outside: pose by the scroll story, offset by intros and the finish spin.
-  const pose = { x: 0.5, y: 0.54, s: 0.3, rx: -0.3, ry: -0.45, rz: 0.22, explode: 0, idle: 1 };
+  const pose = { x: 0.5, y: 0.5, s: 0.5, rx: -0.25, ry: -0.35, rz: 0.2, explode: 0, idle: 1 };
   const offset = { x: 0, y: 0, rx: 0, ry: 0, rz: 0, spin: 0, scale: 1 };
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1;
@@ -382,7 +414,12 @@ export function createCard(canvas) {
     renderer.render(scene, camera);
   });
 
-  const ready = Promise.all(['500', '600', '800'].map((w) => document.fonts.load(`${w} 40px Archivo`)))
+  const ready = Promise.all([
+    document.fonts.load('600 40px "Barlow"'),
+    document.fonts.load('500 40px "Barlow"'),
+    document.fonts.load('700 40px "Barlow Condensed"'),
+    document.fonts.load('500 40px "Barlow Condensed"'),
+  ])
     .catch(() => {})
     .then(() => {
       if (finish) redraw();
