@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en" data-finish="black">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Obverse — a steel card with nothing on its face</title>
+  <meta name="description" content="Obverse is a 28-gram steel credit card with nothing printed on its face except your name. In silver, black, gold or white.">
+  <meta name="theme-color" content="#BB4400">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script>
+    try {
+      var f = localStorage.getItem('obverse-finish');
+      if (['silver', 'black', 'gold', 'white'].indexOf(f) > -1) document.documentElement.dataset.finish = f;
+    } catch (e) {}
+    document.documentElement.classList.add('js');
+  </script>
+</head>
+<body>
+  <a class="skip" href="#history">Skip to the story</a>
+
+  <header class="nav" data-nav>
+    <a class="wordmark" href="#top">Obverse</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#history">Story</a>
+      <a href="#card">The card</a>
+      <a href="#membership">Membership</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <div class="dots" role="group" aria-label="Card finish">
+      <button type="button" data-finish-btn="silver" aria-label="Silver finish" title="Silver"><span class="dot" style="--disc:#c9ccd1"></span></button>
+      <button type="button" data-finish-btn="black" aria-label="Black finish" title="Black"><span class="dot" style="--disc:#1e1e21"></span></button>
+      <button type="button" data-finish-btn="gold" aria-label="Gold finish" title="Gold"><span class="dot" style="--disc:#e2b660"></span></button>
+      <button type="button" data-finish-btn="white" aria-label="White finish" title="White"><span class="dot" style="--disc:#f2f1ed"></span></button>
+    </div>
+    <a class="btn btn-nav" href="#choose">Request</a>
+  </header>
+
+  <canvas class="stage" id="stage" aria-hidden="true"></canvas>
+
+  <main>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-type">
+        <h1 class="hero-title display" id="hero-title" aria-label="Face value">
+          <span class="line l1" data-split>Face</span>
+          <span class="line l2" data-split>value</span>
+        </h1>
+        <p class="hero-side hero-side-r" data-intro>Steel credit card,<br>28 grams</p>
+        <p class="hero-side hero-side-l" data-intro>In silver, black,<br>gold or white</p>
+      </div>
+      <div class="hero-foot">
+        <p class="hero-lede" data-intro>Obverse is a steel credit card with nothing printed on its face but your name.</p>
+        <div class="hero-actions" data-intro>
+          <a class="btn btn-invert" href="#choose">Request your card <span aria-hidden="true">→</span></a>
+          <a class="link" href="#history">Read the story</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="history curtain" id="history" aria-labelledby="history-title">
+      <div class="grid">
+        <div class="history-head" data-reveal>
+          <h2 class="h2" id="history-title">Money has two faces</h2>
+        </div>
+        <p class="history-intro lede" data-reveal-self>For 2,600 years the front of money, its obverse, has carried the face of whoever made it. Emperors, kings, gods. The reverse said what it was worth.</p>
+
+        <figure class="coin coin-hero">
+          <div class="frame"><img src="assets/aureus-coin-portraying-emperor-otho.jpg" width="1436" height="798" alt="Gold aureus shown from both sides: the head of Emperor Otho on the left, a standing goddess holding a wreath on the right."></div>
+          <figcaption>Aureus of Emperor Otho, Rome, 69 CE. Obverse left, reverse right.</figcaption>
+        </figure>
+
+        <figure class="coin coin-a">
+          <div class="frame"><img src="assets/coin-of-kushan-empire-king-vasudeva-i.jpg" width="1920" height="955" loading="lazy" alt="Gold coin of King Vasudeva I from both sides: the king standing at an altar, and a god with a bull."></div>
+          <figcaption>Vasudeva I, Kushan Empire.</figcaption>
+        </figure>
+        <figure class="coin coin-b">
+          <div class="frame"><img src="assets/coin-havishka-reverse.jpg" width="1920" height="962" loading="lazy" alt="Gold coin of King Havishka from both sides: a crowned half-length portrait, and a standing figure holding a wreath."></div>
+          <figcaption>Havishka, Kushan Empire.</figcaption>
+        </figure>
+
+        <p class="history-turn statement" data-reveal-self>We turned it around. The front of an Obverse card carries one face: yours.</p>
+        <figure class="coin coin-c">
+          <div class="frame"><img src="assets/coin-with-figure-of-an-archer-obverse.jpg" width="1920" height="947" loading="lazy" alt="Gold coin of Chandragupta II from both sides: the king as an archer, and the goddess Lakshmi seated on a lotus."></div>
+          <figcaption>Chandragupta II as an archer, Gupta period, around 400 CE.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="card" data-side="left" aria-labelledby="card-title">
+      <div class="chapter-pin">
+        <div class="chapter-copy" data-reveal>
+          <h2 class="h2" id="card-title">The front is yours</h2>
+          <p class="lede">No number, no expiry date, no bank logo the size of a billboard. Brushed steel, a chip, and your name, cut into the metal by laser.</p>
+          <ul class="facts">
+            <li>Engraved, not printed, so your name never wears off</li>
+            <li>Pays by tap or chip anywhere cards are taken</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="weight" data-side="right" aria-labelledby="weight-title">
+      <div class="chapter-pin">
+        <div class="chapter-copy" data-reveal>
+          <h2 class="h2" id="weight-title">Feel the weight</h2>
+          <p class="figure display"><span data-count="28">28</span>&thinsp;g</p>
+          <p class="lede">A plastic card weighs about five grams. Obverse is 28 grams of stainless steel, and it lands on a counter with a sound you will learn to recognise.</p>
+          <dl class="specs">
+            <div><dt>Thickness</dt><dd>0.8 mm</dd></div>
+            <div><dt>Size</dt><dd>85.6 × 54 mm</dd></div>
+            <div><dt>Steel</dt><dd>316L stainless</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter chapter-long" id="layers" data-side="left" aria-labelledby="layers-title">
+      <div class="chapter-pin">
+        <div class="chapter-copy" data-reveal>
+          <h2 class="h2" id="layers-title">Built in layers</h2>
+          <p class="lede">Four parts, pressed together under heat, then cut to shape in 96 passes of a fibre laser.</p>
+          <ul class="facts facts-strong">
+            <li><strong>Steel face</strong> brushed in one direction</li>
+            <li><strong>Carbon core</strong> carrying the contactless antenna</li>
+            <li><strong>Gold-plated chip</strong> set flush with the steel</li>
+            <li><strong>Steel back</strong> etched with your number</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter chapter-long" id="reverse" data-side="right" aria-labelledby="reverse-title">
+      <div class="chapter-pin">
+        <div class="chapter-copy" data-reveal>
+          <h2 class="h2" id="reverse-title">Turn it over</h2>
+          <p class="lede">Your card number, expiry and security code live on the back, out of sight across a café table. Online, the app makes a new virtual number for every shop you pay.</p>
+          <ul class="facts">
+            <li>Freeze and unfreeze the card with one tap</li>
+            <li>Spend in 73 currencies at the real exchange rate</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter chapter-choose" id="choose" data-side="left" aria-labelledby="choose-title">
+      <div class="chapter-pin">
+        <form class="chapter-copy chooser" data-reveal data-chooser>
+          <h2 class="h2" id="choose-title">Choose your face</h2>
+          <p class="lede">Four finishes, one weight. Pick one, put your name on it, and watch the card change as you do.</p>
+          <fieldset class="finishes">
+            <legend class="sr-only">Finish</legend>
+            <label class="finish"><input type="radio" name="finish" value="silver"><span class="disc" style="--disc:#c9ccd1"></span><span><strong>Silver</strong><span class="finish-note">Brushed stainless steel</span></span></label>
+            <label class="finish"><input type="radio" name="finish" value="black"><span class="disc" style="--disc:#1e1e21"></span><span><strong>Black</strong><span class="finish-note">Matte black coated steel</span></span></label>
+            <label class="finish"><input type="radio" name="finish" value="gold"><span class="disc" style="--disc:#e2b660"></span><span><strong>Gold</strong><span class="finish-note">Gold-tone coated steel</span></span></label>
+            <label class="finish"><input type="radio" name="finish" value="white"><span class="disc" style="--disc:#f2f1ed"></span><span><strong>White</strong><span class="finish-note">Ceramic over a steel core</span></span></label>
+          </fieldset>
+          <div class="engrave">
+            <label for="engrave">Name on the card</label>
+            <input id="engrave" name="engrave" type="text" maxlength="22" autocomplete="name" spellcheck="false" placeholder="YOUR NAME">
+          </div>
+          <a class="btn" data-request href="mailto:hello@obverse.example?subject=Obverse%20card%20request">Request this card <span aria-hidden="true">→</span></a>
+        </form>
+      </div>
+    </section>
+
+    <section class="membership curtain" id="membership" aria-labelledby="membership-title">
+      <div class="grid">
+        <div class="membership-price" data-reveal>
+          <h2 class="h2" id="membership-title">One membership</h2>
+          <p class="price display">$96</p>
+          <p class="lede">A year, with everything on this list included. Cancel in any month and we refund the months you did not use.</p>
+          <a class="btn btn-invert" href="#choose">Request your card <span aria-hidden="true">→</span></a>
+        </div>
+        <ul class="included" data-reveal>
+          <li><strong>The steel card</strong> in the finish you choose, engraved with your name</li>
+          <li><strong>1.9% back</strong> on every purchase, paid out monthly</li>
+          <li><strong>73 currencies</strong> at the real exchange rate, with no foreign fees</li>
+          <li><strong>Virtual numbers</strong> made fresh for every online shop</li>
+          <li><strong>Lost it?</strong> A replacement in your hand within two days</li>
+          <li><strong>A new finish</strong> once a year, free; we recycle the old steel</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="faq curtain" id="faq" aria-labelledby="faq-title">
+      <div class="grid">
+        <h2 class="h2 faq-title" id="faq-title">Questions</h2>
+        <div class="faq-list" data-reveal>
+          <details>
+            <summary>Does contactless work through steel?</summary>
+            <p>Yes. The antenna sits in the carbon core and the steel is cut around it, so the card pays by tap at any contactless terminal, the same as plastic.</p>
+          </details>
+          <details>
+            <summary>Can I change the finish later?</summary>
+            <p>Once a year at no cost. Send the old card back in the sleeve we include and we recycle its steel.</p>
+          </details>
+          <details>
+            <summary>What happens if I lose it?</summary>
+            <p>Freeze it in the app straight away. A replacement reaches you within two days, and your virtual numbers keep working in the meantime.</p>
+          </details>
+          <details>
+            <summary>Why is the number on the back?</summary>
+            <p>Because the front is the side people see. Keeping the number, expiry and code on the reverse means a glance across a table shows your name and nothing else.</p>
+          </details>
+          <details>
+            <summary>Is Obverse a real card?</summary>
+            <p>Not yet. This page is a design concept. Nothing on it is an offer of credit, and no card will be issued from it.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer curtain">
+    <div class="footer-top">
+      <p class="footer-line lede">Money has two faces. Make the front one yours.</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#history">Story</a>
+        <a href="#card">The card</a>
+        <a href="#membership">Membership</a>
+        <a href="#faq">Questions</a>
+        <a href="#choose">Request a card</a>
+      </nav>
+    </div>
+    <p class="footer-name display" aria-hidden="true"><span data-fit>Obverse</span></p>
+    <div class="footer-bottom">
+      <p>Obverse is a design concept. It is not a bank, nothing here is a financial offer, and the card details shown are invented.</p>
+      <p class="credits">Pictures: <a href="https://www.artic.edu/artworks/5616">“Aureus (Coin) Portraying Emperor Otho”</a>, Ancient Roman, 69 CE, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, via the Art Institute of Chicago; <a href="https://commons.wikimedia.org/wiki/File:Gold_coin_of_the_Kushan_empire,_king_Vasudeva_I.jpg">“Coin of Kushan empire, King Vasudeva I”</a>, <a href="https://commons.wikimedia.org/wiki/File:Gold_coin_of_the_Kushan_empire,_king_Havishka_-_1999.227_-_Cleveland_Museum_of_Art.jpg">“Coin: Havishka”</a> and <a href="https://commons.wikimedia.org/wiki/File:India,_Chandragupta_II,_Gupta_Period_-_Coin_with_Figure_of_an_Archer_-_1977.62_-_Cleveland_Museum_of_Art.jpg">“Coin with Figure of an Archer”</a>, Cleveland Museum of Art, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, via Wikimedia Commons.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
