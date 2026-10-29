@@ -64,8 +64,8 @@
 .earn-note span { font-weight: 800; }
 
 .bonus { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px 56px; align-items: end; padding-block: clamp(16px, 3vw, 40px); border-block: 2px solid currentColor; }
-.bonus-points { display: flex; align-items: baseline; gap: 12px; font-family: var(--display); font-stretch: 125%; font-weight: 900; line-height: .85; letter-spacing: -0.05em; color: var(--display-ink); }
-.bonus-points span { font-size: clamp(64px, 10vw, 168px); font-variant-numeric: tabular-nums; }
+.bonus-points { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-family: var(--display); font-stretch: 125%; font-weight: 900; line-height: .85; letter-spacing: -0.05em; color: var(--display-ink); }
+.bonus-points span { font-size: clamp(48px, 10vw, 168px); font-variant-numeric: tabular-nums; }
 .bonus-points small { font-size: clamp(16px, 1.6vw, 24px); letter-spacing: -0.01em; text-transform: uppercase; }
 .bonus-copy { font-size: var(--t-lede); line-height: 1.45; max-width: 36ch; }
 .bonus-copy strong { font-weight: 800; font-variant-numeric: tabular-nums; }
@@ -163,7 +163,10 @@
 .spec { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .spec div { background: var(--tone); border-radius: 24px; padding: 28px 24px 26px; display: grid; gap: 28px; align-content: space-between; min-height: 180px; }
 .spec dt { font-size: var(--t-small); font-weight: 700; color: var(--soft); }
-.spec dd { font-family: var(--display); font-weight: 700; font-size: clamp(18px, 1.5vw, 24px); line-height: 1.15; letter-spacing: -0.02em; }
+.spec dd { font-family: var(--display); font-weight: 700; font-size: clamp(16px, 1.5vw, 24px); line-height: 1.15; letter-spacing: -0.02em; }
+
+/* Long words in narrow cards break rather than spill out of them. */
+.spec dd, .benefit h3, .benefit p, .earn-label, .earn-note, .plan-name, .plan-list li, .step h3, .fee-table td, .faq-item summary span { overflow-wrap: break-word; hyphens: auto; }
 
 /* ---------- Fees ---------- */
 
@@ -189,7 +192,7 @@
 
 .faq { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); align-items: start; }
 .faq .sec-head { grid-template-columns: 1fr; position: sticky; top: calc(var(--nav-h) + 32px); }
-.faq .h2 { font-size: clamp(40px, 4.2vw, 68px); }
+.faq .h2 { font-size: clamp(28px, 4.2vw, 68px); }
 .faq-list { border-bottom: 2px solid currentColor; }
 .faq-item { border-top: 2px solid currentColor; }
 .faq-item summary {
@@ -265,11 +268,13 @@
   .earn-item:nth-child(n + 4) { grid-column: span 3; }
   .benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .benefit { min-height: 0; }
+  .spec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .calc { grid-template-columns: 1fr; }
-  .plan-grid, .steps { grid-template-columns: 1fr; }
+  .plan-grid, .steps { grid-template-columns: minmax(0, 1fr); }
   .plan-grid { max-width: 640px; }
   .faq { grid-template-columns: minmax(0, 1fr); }
   .faq .sec-head { position: static; }
+  .faq .h2 { font-size: var(--t-h2); }
 }
 
 /* ---------- Phone ---------- */
@@ -287,18 +292,23 @@
   .earn-rate span { font-size: 46px; }
   .earn-label { margin-top: 6px; font-size: 16px; }
 
-  .bonus { grid-template-columns: 1fr; gap: 16px; }
+  .bonus { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .bonus-points span { font-size: 15vw; }
+  .calc-total { font-size: 15vw; }
+  .plan-cta { white-space: normal; text-align: left; padding-block: 12px; }
 
   .calc-in, .calc-out { border-radius: 22px; }
   .calc-lines div { font-size: 15px; }
 
   .plan { border-radius: 22px; }
+  .plan-name { font-size: clamp(24px, 8vw, 34px); }
 
   .benefit-grid { grid-template-columns: 1fr; }
   .benefit { padding: 20px 18px; border-radius: 20px; }
   .benefit h3 { margin-top: 6px; }
 
-  .spec div { min-height: 140px; padding: 20px 18px; }
+  .spec div { min-height: 0; gap: 18px; padding: 18px 16px; border-radius: 20px; }
+  .spec dd { font-size: 16px; font-stretch: 112%; }
 
   /* The fee table becomes one card per row, each plan labelled. */
   .fee-wrap { padding: 4px 18px; border-radius: 22px; }

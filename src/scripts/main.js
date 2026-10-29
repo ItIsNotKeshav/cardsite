@@ -301,12 +301,14 @@ mm.add({ desk: '(min-width: 768px)', phone: '(max-width: 767.98px)' }, (ctx) => 
       tl.fromTo(pose, { ...c.in }, { ...c.hold, ...later, duration: 0.7, ease: 'sine.inOut' }, i + 0.05);
     }
     if (i === last) return;
-    // Between chapters: the card moves on, the old words lift away and the new ones rise into place.
+    // Between chapters: the card moves on while the two chapters cross-fade over a long stretch of
+    // scroll, so no flick of the thumb ever jumps from one to the other. The old words lift away,
+    // the new ones rise into place a beat behind.
     tl.fromTo(pose, { ...c.hold }, { ...C[i + 1].in, ...later, duration: 0.3, ease: 'sine.inOut' }, i + 0.75)
-      .fromTo(corners[i], { y: 0 }, { y: -24, ...later, duration: 0.12 }, i + 0.8)
-      .fromTo(panels[i], { autoAlpha: 1 }, { autoAlpha: 0, ...later, duration: 0.12 }, i + 0.8)
-      .fromTo(panels[i + 1], { autoAlpha: 0 }, { autoAlpha: 1, ...later, duration: 0.12 }, i + 0.92)
-      .fromTo(corners[i + 1], { y: 32 }, { y: 0, ...later, duration: 0.16, ease: 'power2.out' }, i + 0.92);
+      .fromTo(corners[i], { y: 0 }, { y: -40, ...later, duration: 0.24, ease: 'sine.in', stagger: 0.02 }, i + 0.7)
+      .fromTo(panels[i], { autoAlpha: 1 }, { autoAlpha: 0, ...later, duration: 0.22, ease: 'sine.inOut' }, i + 0.72)
+      .fromTo(panels[i + 1], { autoAlpha: 0 }, { autoAlpha: 1, ...later, duration: 0.24, ease: 'sine.inOut' }, i + 0.84)
+      .fromTo(corners[i + 1], { y: 48 }, { y: 0, ...later, duration: 0.3, ease: 'power2.out', stagger: 0.03 }, i + 0.84);
   });
   tl.to({}, { duration: 0.05 }, C.length - 0.05);
 
