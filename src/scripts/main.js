@@ -21,8 +21,10 @@ const NOTE = {
 
 /* ---------- The card's state, owned here and read by the 3D scene every frame ---------- */
 
+// Where the card is heading: one calm pose per section, set as sections change. The card eases
+// there on its own clock, so scroll speed and direction never jerk it about.
 // s is the card's height as a share of the screen height.
-const pose = { x: 0.5, y: 0.5, s: 0.66, rx: -0.12, ry: -0.35, rz: 0.1, explode: 0, idle: 1 };
+const target = { x: 0.5, y: 0.5, s: 0.66, rx: -0.12, ry: -0.35, rz: 0.1, explode: 0, idle: 1 };
 // The card drops in from above when the scene is ready, so it starts out there.
 const offset = reduce
   ? { x: 0, y: 0, rx: 0, ry: 0, rz: 0, spin: 0, scale: 1 }
@@ -101,7 +103,7 @@ applyFinish(BG[root.dataset.finish] ? root.dataset.finish : 'black', false);
 
 import('./card.js')
   .then(({ createCard }) => {
-    card = createCard(canvas, { pose, offset });
+    card = createCard(canvas, { target, offset });
     card.setFinish(root.dataset.finish, false);
     card.setName(cleanName(nameInput.value).trim());
     return card.ready;
@@ -234,31 +236,61 @@ gsap.fromTo('.hero', { '--fade': 1 }, {
 /* ---------- The stage: one chapter per screen of scroll ---------- */
 
 const PI = Math.PI;
-const at = (o) => ({ x: 0.5, y: 0.5, s: 0.6, rx: -0.1, ry: 0, rz: 0, explode: 0, idle: 0.5, ...o });
-const SWIPE = 2; // the chapter where the card swipes off one side and back in from the other
+const at = (o) => ({ x: 0.5, y: 0.5, s: 0.6, rx: -0.12, ry: 0, rz: 0, explode: 0, idle: 0.6, ...o });
+const SWIPE = 2; // the chapter whose giant word travels furthest
 
+// Neighbouring poses stay close: a small change of angle or size per section. The two big moves
+// (turning over to show the back, then back to the front) are single, eased turns.
 const DESK = {
-  hero: at({ s: 0.68, rx: -0.12, ry: -0.35, rz: 0.08, idle: 1 }),
-  show: at({ s: 0.6, rx: -0.1, ry: PI * 2 - 0.3, rz: 0.04, idle: 0.9 }),
+  hero: at({ s: 0.66, ry: -0.35, rz: 0.08, idle: 1 }),
   chapters: [
-    { in: at({ s: 0.62, ry: 0.4, rz: -0.04 }), hold: at({ s: 0.62, ry: -0.35, rx: -0.16 }) },
-    { in: at({ s: 0.5, rx: -0.55, ry: -0.7, rz: 0.12, idle: 0.3 }), hold: at({ s: 0.46, rx: -0.68, ry: -0.95, rz: 0.14, explode: 1, idle: 0.3 }) },
-    { in: at({ s: 0.48, rx: -0.18, ry: 0.12, rz: PI / 2, idle: 0.2 }), hold: at({ s: 0.48, rx: -0.18, ry: 0.12, rz: PI / 2, idle: 0.2 }) },
-    { in: at({ s: 0.62, ry: 2.5 }), hold: at({ s: 0.62, rx: -0.12, ry: PI + 0.15 }) },
-    { in: at({ s: 0.58, ry: PI * 2 - 0.2, idle: 0.8 }), hold: at({ s: 0.58, ry: PI * 2 - 0.2, idle: 0.8 }) },
+    at({ s: 0.62, ry: -0.28, rx: -0.14, rz: 0.04 }),
+    at({ s: 0.52, ry: -0.55, rx: -0.38, rz: 0.08, explode: 1, idle: 0.35 }),
+    at({ s: 0.6, ry: 0.28, rz: -0.06 }),
+    at({ s: 0.62, ry: PI - 0.2 }),
+    at({ s: 0.58, ry: PI * 2 - 0.22, idle: 0.8 }),
   ],
+  show: at({ s: 0.6, ry: PI * 2 - 0.3, rz: 0.04, idle: 0.9 }),
 };
 const PHONE = {
-  hero: at({ s: 0.46, rx: -0.12, ry: -0.35, rz: 0.08, idle: 1 }),
-  show: at({ s: 0.44, rx: -0.1, ry: PI * 2 - 0.3, rz: 0.04, idle: 0.9 }),
+  hero: at({ s: 0.46, ry: -0.35, rz: 0.08, idle: 1 }),
   chapters: [
-    { in: at({ s: 0.42, ry: 0.4, rz: -0.04 }), hold: at({ s: 0.42, ry: -0.35, rx: -0.16 }) },
-    { in: at({ s: 0.36, rx: -0.55, ry: -0.7, rz: 0.12, idle: 0.3 }), hold: at({ s: 0.32, rx: -0.68, ry: -0.95, rz: 0.14, explode: 1, idle: 0.3 }) },
-    { in: at({ s: 0.48, rx: -0.18, ry: 0.12, rz: PI / 2, idle: 0.2 }), hold: at({ s: 0.48, rx: -0.18, ry: 0.12, rz: PI / 2, idle: 0.2 }) },
-    { in: at({ s: 0.42, ry: 2.5 }), hold: at({ s: 0.42, rx: -0.12, ry: PI + 0.15 }) },
-    { in: at({ s: 0.3, y: 0.4, ry: PI * 2 - 0.2, idle: 0.8 }), hold: at({ s: 0.3, y: 0.4, ry: PI * 2 - 0.2, idle: 0.8 }) },
+    at({ s: 0.42, ry: -0.28, rx: -0.14, rz: 0.04 }),
+    at({ s: 0.36, ry: -0.55, rx: -0.38, rz: 0.08, explode: 1, idle: 0.35 }),
+    at({ s: 0.42, ry: 0.28, rz: -0.06 }),
+    at({ s: 0.42, ry: PI - 0.2 }),
+    at({ s: 0.3, y: 0.4, ry: PI * 2 - 0.22, idle: 0.8 }),
   ],
+  show: at({ s: 0.44, ry: PI * 2 - 0.3, rz: 0.04, idle: 0.9 }),
 };
+
+let K = window.matchMedia('(min-width: 768px)').matches ? DESK : PHONE;
+let section = null;
+const stageEl = document.getElementById('card');
+const showEl = document.querySelector('.showcase');
+
+// Which section the card belongs to right now. Chapters change a beat before their words
+// finish cross-fading, so card and copy arrive together.
+function currentSection() {
+  const vh = window.innerHeight;
+  if (showEl.getBoundingClientRect().top < vh * 0.6) return 'show';
+  const r = stageEl.getBoundingClientRect();
+  if (r.top > vh * 0.5) return 'hero';
+  const t = Math.min(1, Math.max(0, -r.top / (r.height - vh))) * K.chapters.length;
+  return Math.min(K.chapters.length - 1, Math.floor(t + 0.15));
+}
+function updateSection(force = false) {
+  const next = currentSection();
+  if (next === section && !force) return;
+  section = next;
+  Object.assign(target, next === 'hero' || next === 'show' ? K[next] : K.chapters[next]);
+}
+ScrollTrigger.create({ start: 0, end: 'max', onUpdate: () => updateSection() });
+window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+  K = e.matches ? DESK : PHONE;
+  updateSection(true);
+});
+updateSection(true);
 
 const panels = gsap.utils.toArray('[data-panel]');
 const words = panels.map((p) => p.querySelector('[data-drift]'));
@@ -277,10 +309,8 @@ gsap.fromTo(panels[0].children, { opacity: 0 }, {
 });
 
 const mm = gsap.matchMedia();
-mm.add({ desk: '(min-width: 768px)', phone: '(max-width: 767.98px)' }, (ctx) => {
-  const K = ctx.conditions.desk ? DESK : PHONE;
-  const C = K.chapters;
-  const last = C.length - 1;
+mm.add({ desk: '(min-width: 768px)', phone: '(max-width: 767.98px)' }, () => {
+  const last = panels.length - 1;
   const later = { immediateRender: false };
 
   const tl = gsap.timeline({
@@ -288,51 +318,20 @@ mm.add({ desk: '(min-width: 768px)', phone: '(max-width: 767.98px)' }, (ctx) => 
     scrollTrigger: { trigger: '#card', start: 'top top', end: 'bottom bottom', scrub },
   });
 
-  C.forEach((c, i) => {
+  panels.forEach((panel, i) => {
     // Each giant word slides sideways through its chapter; the swipe chapter's word travels furthest.
     const travel = i === SWIPE ? 40 : 10;
     tl.fromTo(words[i], { xPercent: travel }, { xPercent: -travel, ...later, duration: 1 }, i);
 
-    if (i === SWIPE) {
-      tl.fromTo(pose, { x: 0.5 }, { x: 1.7, ...later, duration: 0.28, ease: 'power2.in' }, i + 0.08)
-        .set(pose, { x: -0.7 }, i + 0.37)
-        .fromTo(pose, { x: -0.7 }, { x: 0.5, ...later, duration: 0.3, ease: 'power3.out' }, i + 0.38);
-    } else {
-      tl.fromTo(pose, { ...c.in }, { ...c.hold, ...later, duration: 0.7, ease: 'sine.inOut' }, i + 0.05);
-    }
     if (i === last) return;
-    // Between chapters: the card moves on while the two chapters cross-fade over a long stretch of
-    // scroll, so no flick of the thumb ever jumps from one to the other. The old words lift away,
-    // the new ones rise into place a beat behind.
-    tl.fromTo(pose, { ...c.hold }, { ...C[i + 1].in, ...later, duration: 0.3, ease: 'sine.inOut' }, i + 0.75)
-      .fromTo(corners[i], { y: 0 }, { y: -40, ...later, duration: 0.24, ease: 'sine.in', stagger: 0.02 }, i + 0.7)
+    // Between chapters the words cross-fade over a long stretch of scroll, so no flick of the thumb
+    // ever jumps from one to the other. The old words lift away, the new ones rise a beat behind.
+    tl.fromTo(corners[i], { y: 0 }, { y: -40, ...later, duration: 0.24, ease: 'sine.in', stagger: 0.02 }, i + 0.7)
       .fromTo(panels[i], { autoAlpha: 1 }, { autoAlpha: 0, ...later, duration: 0.22, ease: 'sine.inOut' }, i + 0.72)
       .fromTo(panels[i + 1], { autoAlpha: 0 }, { autoAlpha: 1, ...later, duration: 0.24, ease: 'sine.inOut' }, i + 0.84)
       .fromTo(corners[i + 1], { y: 48 }, { y: 0, ...later, duration: 0.3, ease: 'power2.out', stagger: 0.03 }, i + 0.84);
   });
-  tl.to({}, { duration: 0.05 }, C.length - 0.05);
-
-  // Into the finish sections: the card settles in the middle, then turns slowly through them.
-  gsap.fromTo(pose, { ...C[last].hold }, {
-    ...K.show,
-    ease: 'none',
-    immediateRender: false,
-    scrollTrigger: { trigger: '.showcase', start: 'top bottom', end: 'top top', scrub },
-  });
-  gsap.fromTo(pose, { ry: K.show.ry }, {
-    ry: K.show.ry + 0.7,
-    ease: 'none',
-    immediateRender: false,
-    scrollTrigger: { trigger: '.showcase', start: 'top top', end: 'bottom bottom', scrub },
-  });
-
-  Object.assign(pose, K.hero);
-  gsap.fromTo(pose, { ...K.hero }, {
-    ...C[0].in,
-    ease: 'none',
-    immediateRender: false,
-    scrollTrigger: { trigger: '#card', start: 'top bottom', end: 'top top', scrub },
-  });
+  tl.to({}, { duration: 0.05 }, panels.length - 0.05);
 });
 
 /* ---------- Every finish: the card previews each one as its screen arrives ---------- */
