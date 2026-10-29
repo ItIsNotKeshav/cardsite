@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
 // ISO/IEC 7810 ID-1 card held upright (portrait), modelled in centimetres.
 const W = 5.398;
@@ -63,16 +63,17 @@ function slab(depth, bevel, inset = 0) {
 }
 
 // Brushed titanium: fine lines running the length of the card, each a slightly different roughness.
-function brushCanvas() {
+function brushCanvas(size) {
   const c = document.createElement('canvas');
-  c.width = c.height = 1024;
+  c.width = c.height = size;
   const g = c.getContext('2d');
+  const k = size / 1024;
   g.fillStyle = '#c4c4c4';
-  g.fillRect(0, 0, 1024, 1024);
-  for (let i = 0; i < 9000; i++) {
+  g.fillRect(0, 0, size, size);
+  for (let i = 0; i < 9000 * k; i++) {
     const v = (170 + Math.random() * 75) | 0;
     g.fillStyle = `rgba(${v},${v},${v},${0.08 + Math.random() * 0.16})`;
-    g.fillRect(Math.random() * 1024, Math.random() * 1224 - 200, Math.random() < 0.85 ? 1 : 2, 200 + Math.random() * 800);
+    g.fillRect(Math.random() * size, (Math.random() * 1224 - 200) * k, Math.random() < 0.85 ? 1 : 2, (200 + Math.random() * 800) * k);
   }
   return c;
 }
@@ -133,7 +134,7 @@ function chipCanvas() {
 
 // Expanded lines are the display face (Archivo); everything else is set in Geist, like the page.
 function setFont(g, weight, px, spacing, stretch = 'normal') {
-  g.font = `${weight} ${px}px "${stretch === 'expanded' ? 'Archivo' : 'Geist'}", Arial, sans-serif`;
+  g.font = `${weight} ${px}px "${stretch === 'expanded' ? 'Archivo Variable' : 'Geist Variable'}", Arial, sans-serif`;
   g.fontStretch = stretch;
   g.letterSpacing = `${spacing}px`;
 }
@@ -201,9 +202,18 @@ function drawBack(canvas, f, name) {
   g.fillText(name, x, (H - 0.55) * k);
 }
 
-export function createCard(canvas) {
+// Frame-rate independent easing: the same feel at 60, 90 or 120 Hz.
+const damp = (from, to, lambda, dt) => from + (to - from) * (1 - Math.exp(-lambda * dt));
+
+const X_AXIS = new THREE.Vector3(1, 0, 0);
+const Y_AXIS = new THREE.Vector3(0, 1, 0);
+const IDENTITY = new THREE.Quaternion();
+
+// pose and offset are owned by the page's scroll story; the card only reads them each frame.
+export function createCard(canvas, { pose, offset }) {
+  const small = Math.min(window.innerWidth, window.innerHeight) < 600;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.75 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.shadowMap.enabled = true;
@@ -223,9 +233,9 @@ export function createCard(canvas) {
   const caster = new THREE.DirectionalLight(0xffffff, 0.25);
   caster.position.set(-3, 5, 22);
   caster.castShadow = true;
-  caster.shadow.mapSize.set(2048, 2048);
-  caster.shadow.radius = 18;
-  caster.shadow.blurSamples = 24;
+  caster.shadow.mapSize.setScalar(small ? 1024 : 2048);
+  caster.shadow.radius = small ? 10 : 18;
+  caster.shadow.blurSamples = small ? 12 : 24;
   caster.shadow.bias = -0.0005;
   Object.assign(caster.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 60 });
   scene.add(key, rim, caster);
@@ -240,7 +250,7 @@ export function createCard(canvas) {
 
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
 
-  const brush = new THREE.CanvasTexture(brushCanvas());
+  const brush = new THREE.CanvasTexture(brushCanvas(small ? 512 : 1024));
   brush.wrapS = brush.wrapT = THREE.RepeatWrapping;
   brush.repeat.set(1 / W, 1 / H);
   brush.offset.set(0.5, 0.5);
@@ -269,9 +279,10 @@ export function createCard(canvas) {
   chipTex.anisotropy = maxAniso;
   const chipMat = new THREE.MeshPhysicalMaterial({ color: '#e8c77c', map: chipTex, metalness: 1, roughness: 0.28, clearcoat: 0.3 });
 
-  const faceW = Math.round((2048 * W) / H);
-  const frontCanvas = Object.assign(document.createElement('canvas'), { width: faceW, height: 2048 });
-  const backCanvas = Object.assign(document.createElement('canvas'), { width: faceW, height: 2048 });
+  const faceH = small ? 1536 : 2048;
+  const faceW = Math.round((faceH * W) / H);
+  const frontCanvas = Object.assign(document.createElement('canvas'), { width: faceW, height: faceH });
+  const backCanvas = Object.assign(document.createElement('canvas'), { width: faceW, height: faceH });
   const etchTexture = (c) => {
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
@@ -296,8 +307,11 @@ export function createCard(canvas) {
   const faceGeo = cardUVs(new THREE.ShapeGeometry(cardShape(0.02), 24));
   const plateMats = [plateMat, edgeMat]; // extrude groups: caps, sides
 
+  // swivel carries the position and whatever turn your hand has given it; card inside it holds the story's pose.
+  const swivel = new THREE.Group();
   const card = new THREE.Group();
-  scene.add(card);
+  swivel.add(card);
+  scene.add(swivel);
 
   const front = new THREE.Group();
   const frontPlate = new THREE.Mesh(plateGeo, plateMats);
@@ -322,36 +336,141 @@ export function createCard(canvas) {
   card.add(back, core, front);
   [frontPlate, backPlate, core, chip].forEach((m) => { m.castShadow = true; });
 
-  // Driven from outside: pose by the scroll story, offset by intros and the finish spin.
-  // s is the card's height as a share of the screen height.
-  const pose = { x: 0.5, y: 0.5, s: 0.66, rx: -0.12, ry: -0.35, rz: 0.1, explode: 0, idle: 1 };
-  const offset = { x: 0, y: 0, rx: 0, ry: 0, rz: 0, spin: 0, scale: 1 };
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1;
 
-  // The card turns toward the cursor, and can be flicked round by dragging.
+  /* ---------- Turning it by hand ----------
+     Drag sideways to spin it, up and down to tip it over. The turn is kept as a quaternion so the
+     two axes always follow your hand on screen; let go and it coasts, then settles back to its pose. */
+
+  const turn = new THREE.Quaternion();
+  const step = new THREE.Quaternion();
+  const spin = { x: 0, y: 0 }; // angular velocity in radians per second, about the screen's x and y
+  const drag = { on: false, x: 0, y: 0, t: 0 };
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-  const drag = { on: false, lastX: 0, v: 0, spin: 0 };
+  const RAD_PER_PX = 0.0085;
+
+  function rotateBy(ax, ay) {
+    if (ay) turn.premultiply(step.setFromAxisAngle(Y_AXIS, ay));
+    if (ax) turn.premultiply(step.setFromAxisAngle(X_AXIS, ax));
+  }
+
+  function grab(x, y) {
+    drag.on = true;
+    drag.x = x;
+    drag.y = y;
+    drag.t = performance.now();
+    spin.x = spin.y = 0;
+    document.documentElement.classList.add('is-dragging');
+  }
+  function move(x, y) {
+    if (!drag.on) return;
+    const now = performance.now();
+    const dt = Math.max((now - drag.t) / 1000, 1 / 240);
+    const ay = (x - drag.x) * RAD_PER_PX;
+    const ax = (y - drag.y) * RAD_PER_PX;
+    rotateBy(ax, ay);
+    // A smoothed velocity, so a flick carries on at the speed your hand was moving.
+    spin.x = damp(spin.x, ax / dt, 24, dt);
+    spin.y = damp(spin.y, ay / dt, 24, dt);
+    drag.x = x;
+    drag.y = y;
+    drag.t = now;
+  }
+  function release() {
+    if (!drag.on) return;
+    drag.on = false;
+    // A hand that stopped before letting go shouldn't flick it.
+    if (performance.now() - drag.t > 80) spin.x = spin.y = 0;
+    const cap = 18;
+    spin.x = THREE.MathUtils.clamp(spin.x, -cap, cap);
+    spin.y = THREE.MathUtils.clamp(spin.y, -cap, cap);
+    document.documentElement.classList.remove('is-dragging');
+  }
+
+  // Is the point on screen over the card itself?
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  function hit(clientX, clientY) {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((clientX - r.left) / r.width) * 2 - 1, -((clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    return ray.intersectObject(swivel, true).length > 0;
+  }
+
+  let active = true;
+  const blocked = (target) => target.closest('a, button, input, label, summary, select, textarea, [data-no-drag], [data-curtain], .curtain, .nav, .menu');
+
   window.addEventListener('pointermove', (e) => {
-    pointer.tx = (e.clientX / window.innerWidth) * 2 - 1;
-    pointer.ty = (e.clientY / window.innerHeight) * 2 - 1;
-    if (drag.on) {
-      drag.v = (e.clientX - drag.lastX) * 0.012;
-      drag.spin += drag.v;
-      drag.lastX = e.clientX;
+    if (e.pointerType === 'mouse') {
+      pointer.tx = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.ty = (e.clientY / window.innerHeight) * 2 - 1;
+      move(e.clientX, e.clientY);
     }
   }, { passive: true });
   window.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    if (e.target.closest('a, button, input, label, summary, [data-no-drag]')) return;
-    drag.on = true;
-    drag.lastX = e.clientX;
-    drag.v = 0;
-    document.documentElement.classList.add('is-dragging');
+    if (!active || e.pointerType !== 'mouse' || e.button !== 0 || blocked(e.target)) return;
+    grab(e.clientX, e.clientY);
   });
-  window.addEventListener('pointerup', () => {
-    drag.on = false;
-    document.documentElement.classList.remove('is-dragging');
-  });
+  window.addEventListener('pointerup', (e) => { if (e.pointerType === 'mouse') release(); });
+  window.addEventListener('blur', release);
+
+  // Touch: a sideways swipe on the card turns it straight away. A press and hold on the card frees it
+  // to tip up and down too. A vertical swipe is left alone, so the page still scrolls under your thumb.
+  const touch = { id: null, x0: 0, y0: 0, mode: null, timer: 0 };
+  const HOLD_MS = 220;
+  const SLOP = 8;
+  function touchById(list) {
+    for (const t of list) if (t.identifier === touch.id) return t;
+    return null;
+  }
+  function endTouch() {
+    clearTimeout(touch.timer);
+    if (touch.mode === 'drag') release();
+    touch.id = null;
+    touch.mode = null;
+    document.documentElement.classList.remove('is-holding');
+  }
+  window.addEventListener('touchstart', (e) => {
+    if (touch.id !== null) { endTouch(); return; } // a second finger: pinch or scroll, not ours
+    const t = e.changedTouches[0];
+    if (!active || blocked(e.target) || !hit(t.clientX, t.clientY)) return;
+    touch.id = t.identifier;
+    touch.x0 = t.clientX;
+    touch.y0 = t.clientY;
+    touch.mode = 'pending';
+    touch.timer = setTimeout(() => {
+      if (touch.mode !== 'pending') return;
+      touch.mode = 'drag';
+      grab(touch.x0, touch.y0);
+      document.documentElement.classList.add('is-holding');
+      navigator.vibrate?.(8);
+    }, HOLD_MS);
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (touch.id === null) return;
+    const t = touchById(e.changedTouches);
+    if (!t) return;
+    if (touch.mode === 'pending') {
+      const dx = t.clientX - touch.x0;
+      const dy = t.clientY - touch.y0;
+      if (Math.hypot(dx, dy) < SLOP) return;
+      clearTimeout(touch.timer);
+      if (Math.abs(dx) > Math.abs(dy) * 1.2 && e.cancelable) {
+        touch.mode = 'drag';
+        grab(touch.x0, touch.y0);
+      } else {
+        touch.mode = 'scroll';
+        return;
+      }
+    }
+    if (touch.mode !== 'drag') return;
+    if (e.cancelable) e.preventDefault();
+    move(t.clientX, t.clientY);
+  }, { passive: false });
+  window.addEventListener('touchend', (e) => { if (touchById(e.changedTouches)) endTouch(); }, { passive: true });
+  window.addEventListener('touchcancel', endTouch, { passive: true });
+
+  /* ---------- Finish and name ---------- */
 
   let finish = null;
   let name = 'YOUR NAME';
@@ -383,13 +502,13 @@ export function createCard(canvas) {
     }
   }
 
-  function setFinish(next, animate = true) {
+  function setFinish(next, animate = true, gsap = null) {
     if (!FINISHES[next] || next === finish) return;
     const from = FINISHES[finish] || FINISHES[next];
     const to = FINISHES[next];
     finish = next;
     finishTween?.kill();
-    if (!animate || !window.gsap) {
+    if (!animate || !gsap) {
       offset.spin = 0;
       applyMaterials(from, to, 1);
       redraw();
@@ -399,10 +518,10 @@ export function createCard(canvas) {
     const progress = { k: 0 };
     let swapped = false;
     const startSpin = offset.spin % (Math.PI * 2);
-    finishTween = window.gsap.to(progress, {
+    finishTween = gsap.to(progress, {
       k: 1,
-      duration: motion ? 1.2 : 0.6,
-      ease: 'power3.inOut',
+      duration: motion ? 1.3 : 0.6,
+      ease: 'expo.inOut',
       onUpdate() {
         applyMaterials(from, to, progress.k);
         if (motion) offset.spin = startSpin + progress.k * (Math.PI * 2 - startSpin);
@@ -422,39 +541,62 @@ export function createCard(canvas) {
     if (finish) redraw();
   }
 
+  /* ---------- Size ---------- */
+
+  // The canvas is as tall as the largest viewport (CSS: 100lvh), so a phone's toolbar
+  // sliding in and out never resizes it mid-scroll.
+  let size = { w: 0, h: 0 };
   function resize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (w === size.w && h === size.h) return;
+    size = { w, h };
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener('resize', resize);
+  new ResizeObserver(resize).observe(canvas);
   resize();
 
   const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  let clock = 0;
 
-  renderer.setAnimationLoop((time) => {
-    const t = time / 1000;
-    pointer.x += (pointer.tx - pointer.x) * 0.06;
-    pointer.y += (pointer.ty - pointer.y) * 0.06;
+  // Called once a frame from the page's ticker, after the scroll position has been updated.
+  function tick(dt) {
+    if (!active) return;
+    dt = Math.min(dt, 1 / 20); // a dropped frame shouldn't make it jump
+    clock += dt;
+    const t = clock;
+
+    pointer.x = damp(pointer.x, pointer.tx, 3.5, dt);
+    pointer.y = damp(pointer.y, pointer.ty, 3.5, dt);
+
     if (!drag.on) {
-      drag.spin += drag.v;
-      drag.v *= 0.93;
-      drag.spin *= 0.95; // settles back to its pose
+      // Coast, slowing down, then ease back to the pose by the shortest way round.
+      const speed = Math.hypot(spin.x, spin.y);
+      if (speed > 0.001) {
+        rotateBy(spin.x * dt, spin.y * dt);
+        const friction = Math.exp(-2.6 * dt);
+        spin.x *= friction;
+        spin.y *= friction;
+      }
+      const settle = 2.2 + 5 * Math.max(0, 1 - speed / 3); // pulls harder as it slows
+      turn.slerp(IDENTITY, 1 - Math.exp(-settle * dt));
     }
+
     const vh = 2 * tanHalf * camera.position.z;
     const vw = vh * camera.aspect;
     const idle = pose.idle * motion;
     const follow = motion * (0.4 + pose.idle * 0.6);
     const e = pose.explode;
 
-    card.position.set((pose.x - 0.5 + offset.x) * vw, (0.5 - pose.y - offset.y) * vh, 0);
+    swivel.position.set((pose.x - 0.5 + offset.x) * vw, (0.5 - pose.y - offset.y) * vh, 0);
+    swivel.quaternion.copy(turn);
     // Sized by height, but never wider than most of a narrow screen.
-    card.scale.setScalar(Math.min((pose.s * vh) / H, (0.78 * vw) / W) * offset.scale);
+    swivel.scale.setScalar(Math.min((pose.s * vh) / H, (0.78 * vw) / W) * offset.scale);
     card.rotation.set(
       pose.rx + offset.rx + Math.sin(t * 0.7) * 0.03 * idle + pointer.y * 0.28 * follow,
-      pose.ry + offset.ry + offset.spin + drag.spin + Math.sin(t * 0.45) * 0.06 * idle + pointer.x * 0.42 * follow,
+      pose.ry + offset.ry + offset.spin + Math.sin(t * 0.45) * 0.06 * idle + pointer.x * 0.42 * follow,
       pose.rz + offset.rz + Math.sin(t * 0.55) * 0.02 * idle,
     );
 
@@ -463,17 +605,32 @@ export function createCard(canvas) {
     back.position.set(-e * 0.45, -e * 0.5, -e * 3.2);
 
     renderer.render(scene, camera);
-  });
+  }
+
+  // Off while the card is hidden behind the content sections, so scrolling there costs no GPU time.
+  function setActive(on) {
+    if (on === active) return;
+    active = on;
+    if (!on) {
+      release();
+      endTouch();
+      spin.x = spin.y = 0;
+      turn.identity();
+    }
+  }
 
   const ready = Promise.all([
-    document.fonts.load('600 40px "Geist"'),
-    document.fonts.load('700 40px "Geist"'),
-    document.fonts.load('800 40px "Archivo"'),
+    document.fonts.load('600 40px "Geist Variable"'),
+    document.fonts.load('700 40px "Geist Variable"'),
+    document.fonts.load('800 40px "Archivo Variable"'),
   ])
     .catch(() => {})
     .then(() => {
       if (finish) redraw();
     });
 
-  return { pose, offset, setFinish, setName, ready };
+  // Compile the shaders now rather than on the first frame they're needed.
+  renderer.compile(scene, camera);
+
+  return { setFinish, setName, tick, setActive, ready };
 }

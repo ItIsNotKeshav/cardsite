@@ -1,0 +1,17 @@
+---
+import { FAQ } from '../data/card.js';
+---
+<section class="faq curtain" id="faq" aria-labelledby="faq-title">
+  <div class="sec-head">
+    <p class="eyebrow" data-reveal-1>FAQ</p>
+    <h2 class="h2" id="faq-title" data-swipe>Questions</h2>
+  </div>
+  <div class="faq-list" data-reveal>
+    {FAQ.map((f) => (
+      <details class="faq-item" name="faq">
+        <summary><span>{f.q}</span><i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>{f.a}</p></div>
+      </details>
+    ))}
+  </div>
+</section>

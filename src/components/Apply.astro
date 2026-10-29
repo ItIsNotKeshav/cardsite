@@ -1,0 +1,22 @@
+---
+import { STEPS } from '../data/card.js';
+---
+<section class="apply curtain invert" id="apply" aria-labelledby="apply-title">
+  <div class="sec-head">
+    <p class="eyebrow" data-reveal-1>Apply</p>
+    <h2 class="h2" id="apply-title" data-swipe>In your hand in a week</h2>
+  </div>
+  <ol class="steps" data-reveal>
+    {STEPS.map((s, i) => (
+      <li class="step">
+        <span class="step-n" aria-hidden="true">{i + 1}</span>
+        <h3>{s.title}</h3>
+        <p>{s.body}</p>
+      </li>
+    ))}
+  </ol>
+  <div class="apply-cta" data-reveal-1>
+    <a class="btn" href="#choose">Design your card <span aria-hidden="true">↑</span></a>
+    <p class="fine">This is a design concept, so there’s no real application. Nothing on this page asks for, or stores, your details.</p>
+  </div>
+</section>

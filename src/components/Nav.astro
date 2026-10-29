@@ -1,0 +1,33 @@
+---
+const links = [
+  ['#card', 'The card'],
+  ['#rewards', 'Rewards'],
+  ['#plans', 'Plans'],
+  ['#benefits', 'Benefits'],
+  ['#fees', 'Rates & fees'],
+  ['#faq', 'FAQ'],
+];
+---
+<header class="nav" data-nav>
+  <a class="wordmark" href="#top">Hermes <span>Card</span></a>
+  <nav class="nav-links" aria-label="Sections">
+    {links.map(([href, label]) => <a href={href}>{label}</a>)}
+  </nav>
+  <div class="dots" role="group" aria-label="Card finish">
+    <button type="button" data-finish-btn="black" aria-label="Black titanium" title="Black"><span class="dot" style="--disc:#232326"></span></button>
+    <button type="button" data-finish-btn="silver" aria-label="Silver titanium" title="Silver"><span class="dot" style="--disc:#bdbbb7"></span></button>
+    <button type="button" data-finish-btn="white" aria-label="White ceramic titanium" title="White"><span class="dot" style="--disc:#f3f2ee"></span></button>
+    <button type="button" data-finish-btn="gold" aria-label="Gold titanium" title="Gold"><span class="dot" style="--disc:#dcb45c"></span></button>
+  </div>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-menu-btn>
+    <span class="sr-only">Menu</span>
+    <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+  </button>
+</header>
+
+<div class="menu" id="menu" data-menu hidden>
+  <nav aria-label="Menu">
+    {links.map(([href, label]) => <a href={href}>{label}</a>)}
+  </nav>
+  <a class="btn" href="#apply">Apply now <span aria-hidden="true">→</span></a>
+</div>

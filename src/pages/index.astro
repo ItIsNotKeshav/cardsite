@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Story from '../components/Story.astro';
+import Showcase from '../components/Showcase.astro';
+import Details from '../components/Details.astro';
+import Rewards from '../components/Rewards.astro';
+import Plans from '../components/Plans.astro';
+import Benefits from '../components/Benefits.astro';
+import Fees from '../components/Fees.astro';
+import Apply from '../components/Apply.astro';
+import Faq from '../components/Faq.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base
+  title="Hermes Card — titanium, named for the god of merchants"
+  description="Hermes Card is a design concept for a brushed titanium rewards card: up to 8% back on travel, an 80,000 point welcome bonus, three plans and four finishes."
+>
+  <a class="skip" href="#card">Skip to the card</a>
+  <Nav />
+
+  <canvas class="canvas" id="canvas" aria-hidden="true"></canvas>
+  <div class="cursor" aria-hidden="true" data-cursor></div>
+
+  <main>
+    <Story />
+    <Showcase />
+
+    <div class="marquee curtain" aria-hidden="true" data-curtain>
+      <div class="marquee-row" data-marquee="-1"><span>Hermes Card / Up to 8% back / 80,000 bonus points / Grade 5 titanium / Four finishes / </span><span>Hermes Card / Up to 8% back / 80,000 bonus points / Grade 5 titanium / Four finishes / </span></div>
+      <div class="marquee-row" data-marquee="1"><span>Silver / Black / Gold / White / Tap / Dip / Swipe / </span><span>Silver / Black / Gold / White / Tap / Dip / Swipe / </span></div>
+    </div>
+
+    <Rewards />
+    <Plans />
+    <Benefits />
+    <Details />
+    <Fees />
+    <Apply />
+    <Faq />
+  </main>
+
+  <div class="wipe" aria-hidden="true" data-wipe></div>
+  <Footer />
+
+  <script>
+    import '../scripts/main.js';
+  </script>
+</Base>

@@ -1,0 +1,75 @@
+---
+import { CATEGORIES, PLANS } from '../data/card.js';
+
+const start = PLANS.find((p) => p.featured);
+const pct = (n) => `${n}%`;
+const money = (n) => `$${n.toLocaleString('en-US')}`;
+// Starting monthly spend for the calculator, and how far each slider goes.
+const SPEND = { travel: [250, 3000, 25], dining: [400, 2000, 25], groceries: [500, 2500, 25], transit: [120, 1000, 10], other: [1200, 6000, 50] };
+---
+<section class="rewards curtain" id="rewards" aria-labelledby="rewards-title" data-rewards data-plans={JSON.stringify(PLANS)}>
+  <div class="sec-head">
+    <p class="eyebrow" data-reveal-1>Rewards</p>
+    <h2 class="h2" id="rewards-title" data-swipe>Points on everything</h2>
+    <p class="lede" data-reveal-1>Every purchase earns points, and every point is worth a cent as cash back. Pick a plan to see what it earns.</p>
+  </div>
+
+  <div class="plan-tabs" role="radiogroup" aria-label="Plan" data-reveal-1>
+    {PLANS.map((p) => (
+      <button type="button" role="radio" class="plan-tab" data-plan-tab={p.id} aria-checked={String(p === start)}>
+        <span>{p.name}</span>
+        <small>{p.fee ? `${money(p.fee)} a year` : 'No annual fee'}</small>
+      </button>
+    ))}
+    <span class="plan-tab-pill" aria-hidden="true" data-plan-pill></span>
+  </div>
+
+  <div class="earn" data-reveal>
+    {CATEGORIES.map((c) => (
+      <div class="earn-item">
+        <p class="earn-rate"><span data-rate={c.id}>{pct(start.rates[c.id])}</span><small>back</small></p>
+        <h3 class="earn-label">{c.label}</h3>
+        <p class="earn-note"><span data-points={c.id}>{start.rates[c.id]}x</span> points · {c.note}</p>
+      </div>
+    ))}
+  </div>
+
+  <div class="bonus" data-reveal-1>
+    <div class="bonus-figure">
+      <p class="eyebrow">Welcome bonus</p>
+      <p class="bonus-points"><span data-bonus-points>{start.bonus.points.toLocaleString('en-US')}</span><small>points</small></p>
+    </div>
+    <p class="bonus-copy">
+      Worth <strong data-bonus-value>{money(start.bonus.points / 100)}</strong> as cash back when you spend <strong data-bonus-spend>{money(start.bonus.spend)}</strong> in your first three months<span data-bonus-intro>{start.intro ? `, plus ${start.intro} on purchases and balance transfers` : ''}</span>.
+    </p>
+  </div>
+
+  <div class="calc" data-calc>
+    <div class="calc-in" data-reveal-1>
+      <h3 class="calc-title">What would you earn?</h3>
+      <p class="calc-sub">Your usual monthly spending:</p>
+      {CATEGORIES.map((c) => {
+        const [value, max, step] = SPEND[c.id];
+        return (
+          <div class="slider">
+            <label for={`spend-${c.id}`}>{c.label}</label>
+            <output for={`spend-${c.id}`} data-spend-out={c.id}>{money(value)}</output>
+            <input id={`spend-${c.id}`} type="range" min="0" max={max} step={step} value={value} data-spend={c.id} style={`--fill:${(value / max) * 100}%`} />
+          </div>
+        );
+      })}
+    </div>
+    <div class="calc-out" data-reveal-1 aria-live="polite">
+      <p class="eyebrow">Your first year on <span data-calc-plan>{start.name}</span></p>
+      <p class="calc-total"><span data-out="first">$0</span></p>
+      <dl class="calc-lines">
+        <div><dt>Points from spending</dt><dd data-out="points">0</dd></div>
+        <div><dt>Cash back from spending</dt><dd data-out="earned">$0</dd></div>
+        <div><dt>Welcome bonus</dt><dd data-out="bonus">$0</dd></div>
+        <div><dt>Annual fee</dt><dd data-out="fee">$0</dd></div>
+        <div class="calc-after"><dt>Every year after</dt><dd data-out="after">$0</dd></div>
+      </dl>
+      <p class="calc-note">Estimates at one cent a point, after the annual fee. Groceries earn the boosted rate on the first $25,000 a year.</p>
+    </div>
+  </div>
+</section>
