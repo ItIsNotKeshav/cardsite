@@ -15,10 +15,12 @@ const NUMBER = ['4242', '4242', '4242', '4242'];
 
 // Every finish is grade 5 titanium underneath; the edge is always anodised.
 export const FINISHES = {
-  silver: { plate: '#aaa59d', metalness: 1, roughness: 0.34, clearcoat: 0.05, anisotropy: 0.9, env: 1.5, core: '#3a3c40', etch: '#26282c', stripe: '#141517', etchMetal: 0.35, etchRough: 0.62 },
+  // Silver and white in one: brushed titanium under a thin pearl glaze.
+  silver: { plate: '#d8d6d1', metalness: 0.8, roughness: 0.3, clearcoat: 0.7, anisotropy: 0.7, env: 1.35, core: '#cfccc6', etch: '#26282c', stripe: '#141517', etchMetal: 0.35, etchRough: 0.6 },
   black: { plate: '#2a2a2d', metalness: 0.9, roughness: 0.38, clearcoat: 0.2, anisotropy: 0.8, env: 2.2, core: '#09090a', etch: '#c3c6cc', stripe: '#050506', etchMetal: 0.9, etchRough: 0.3 },
   gold: { plate: '#f0cd78', metalness: 1, roughness: 0.3, clearcoat: 0.05, anisotropy: 0.85, env: 2.3, core: '#1c160c', etch: '#2a1d05', stripe: '#141009', etchMetal: 0.4, etchRough: 0.6 },
-  white: { plate: '#f3f2ee', metalness: 0.02, roughness: 0.3, clearcoat: 1, anisotropy: 0.02, env: 1.0, core: '#d8d6d0', etch: '#1f2023', stripe: '#1a1b1d', etchMetal: 0.1, etchRough: 0.55 },
+  // Anodised wine red, with bright silver type.
+  burgundy: { plate: '#4e1424', metalness: 0.8, roughness: 0.44, clearcoat: 0.15, anisotropy: 0.75, env: 1.3, core: '#2a0c14', etch: '#dcd8d3', stripe: '#1a070d', etchMetal: 0.95, etchRough: 0.25 },
 };
 
 function cardShape(inset = 0) {

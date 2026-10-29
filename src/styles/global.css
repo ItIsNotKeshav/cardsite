@@ -17,11 +17,13 @@
   --ease-out: cubic-bezier(.16, 1, .3, 1);
 }
 
-/* Silver and white sit on black, the black card on pink, the gold card on neon blue. */
-:root[data-finish="silver"], :root[data-finish="white"],
-.show[data-show="silver"], .show[data-show="white"] { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --display-ink: #f2f2f0; --accent: #ff4499; --accent-ink: #0a0a0b; }
+/* Silver sits on black, the black card on pink, the gold card on neon blue, burgundy on blush. */
+:root[data-finish="silver"],
+.show[data-show="silver"] { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --display-ink: #f2f2f0; --accent: #ff4499; --accent-ink: #0a0a0b; }
 :root[data-finish="black"],
 .show[data-show="black"] { --bg: #ff4499; --ink: #0a0a0b; --soft: #4a1229; --tone: #f0358a; --display-ink: #0a0a0b; --accent: #0a0a0b; --accent-ink: #ff4499; }
+:root[data-finish="burgundy"],
+.show[data-show="burgundy"] { --bg: #f6c9d1; --ink: #2a0a12; --soft: #7a3446; --tone: #efb6c2; --display-ink: #2a0a12; --accent: #6e1a30; --accent-ink: #f6c9d1; }
 :root[data-finish="gold"],
 .show[data-show="gold"] { --bg: #3a74ff; --ink: #0a0a0b; --soft: #14285a; --tone: #2f66f0; --display-ink: #0a0a0b; --accent: #0a0a0b; --accent-ink: #3a74ff; }
 

@@ -22,7 +22,8 @@ const { title, description } = Astro.props;
   <script is:inline>
     try {
       var f = localStorage.getItem('heavy-metal-finish');
-      if (['silver', 'black', 'gold', 'white'].indexOf(f) > -1) document.documentElement.dataset.finish = f;
+      if (f === 'white') f = 'silver'; // white and silver are now one finish
+      if (['silver', 'black', 'gold', 'burgundy'].indexOf(f) > -1) document.documentElement.dataset.finish = f;
     } catch (e) {}
     document.documentElement.classList.add('js');
   </script>

@@ -77,7 +77,7 @@ export const FEES = [
 
 export const STEPS = [
   { title: 'See if you’re approved', body: 'Answer a few questions and find out in about a minute. Checking uses a soft enquiry, so it doesn’t affect your credit score.' },
-  { title: 'Make it yours', body: 'Pick black, silver, white or gold titanium and the name we laser-mark on the front.' },
+  { title: 'Make it yours', body: 'Pick black, silver, burgundy or gold titanium and the name we laser-mark on the front.' },
   { title: 'Spend today', body: 'Your digital card is ready the moment you’re approved. The titanium one arrives by courier in five to seven working days.' },
 ];
 
