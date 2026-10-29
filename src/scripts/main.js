@@ -11,12 +11,12 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
 const scrub = reduce ? true : 1;
 
-const BG = { black: '#ff4499', silver: '#0a0a0b', white: '#0a0a0b', gold: '#3a74ff' };
+const BG = { black: '#ff4499', silver: '#0a0a0b', burgundy: '#f6c9d1', gold: '#3a74ff' };
 const NOTE = {
-  silver: 'Bead-blasted bare titanium.',
+  silver: 'Brushed titanium under a pearl-white glaze.',
   black: 'Black titanium with a diamond-like carbon coat.',
   gold: 'Titanium with a gold titanium-nitride coat.',
-  white: 'White ceramic fired over titanium.',
+  burgundy: 'Titanium anodised deep burgundy, silver type.',
 };
 
 /* ---------- The card's state, owned here and read by the 3D scene every frame ---------- */

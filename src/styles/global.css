@@ -17,11 +17,13 @@
   --ease-out: cubic-bezier(.16, 1, .3, 1);
 }
 
-/* Silver and white sit on black, the black card on pink, the gold card on neon blue. */
-:root[data-finish="silver"], :root[data-finish="white"],
-.show[data-show="silver"], .show[data-show="white"] { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --display-ink: #f2f2f0; --accent: #ff4499; --accent-ink: #0a0a0b; }
+/* Silver sits on black, the black card on pink, the gold card on neon blue, burgundy on blush. */
+:root[data-finish="silver"],
+.show[data-show="silver"] { --bg: #0a0a0b; --ink: #f2f2f0; --soft: #9a9a98; --tone: #18181a; --display-ink: #f2f2f0; --accent: #ff4499; --accent-ink: #0a0a0b; }
 :root[data-finish="black"],
 .show[data-show="black"] { --bg: #ff4499; --ink: #0a0a0b; --soft: #4a1229; --tone: #f0358a; --display-ink: #0a0a0b; --accent: #0a0a0b; --accent-ink: #ff4499; }
+:root[data-finish="burgundy"],
+.show[data-show="burgundy"] { --bg: #f6c9d1; --ink: #2a0a12; --soft: #7a3446; --tone: #efb6c2; --display-ink: #2a0a12; --accent: #6e1a30; --accent-ink: #f6c9d1; }
 :root[data-finish="gold"],
 .show[data-show="gold"] { --bg: #3a74ff; --ink: #0a0a0b; --soft: #14285a; --tone: #2f66f0; --display-ink: #0a0a0b; --accent: #0a0a0b; --accent-ink: #3a74ff; }
 
@@ -275,17 +277,18 @@ html:not(.js) .panel { position: relative; height: 100vh; }
 
 /* ---------- Chooser ---------- */
 
-.chooser { display: grid; gap: 18px; width: min(420px, 34vw); max-width: none; }
+.chooser { display: grid; gap: 18px; width: min(420px, 40vw); max-width: none; }
 .finishes { border: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .finishes legend, .engrave label { font-size: var(--t-small); font-weight: 700; margin-bottom: 8px; }
 .finish {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 10px;
+  padding: 10px 12px;
   border-radius: 999px;
   background: var(--tone);
+  font-size: 15px;
   font-weight: 700;
   overflow: hidden;
   isolation: isolate;
@@ -307,7 +310,7 @@ html:not(.js) .panel { position: relative; height: 100vh; }
 .finish:has(input:checked)::before { transform: scaleX(1); }
 .finish input { position: absolute; inset: 0; opacity: 0; }
 .finish:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 3px; }
-.disc { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--disc); border: 2px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+.disc { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--disc); border: 2px solid color-mix(in srgb, var(--ink) 25%, transparent); }
 
 .engrave { display: grid; }
 .engrave input {
@@ -335,7 +338,7 @@ html:not(.js) .panel { position: relative; height: 100vh; }
   font-family: var(--display);
   font-stretch: 125%;
   font-weight: 800;
-  font-size: var(--t-stat);
+  font-size: clamp(28px, 3.4vw, 60px);
   line-height: .9;
   letter-spacing: -0.03em;
   text-transform: uppercase;

@@ -15,8 +15,7 @@
 .invert .btn { background: var(--bg); color: var(--ink); }
 .invert .btn::before { background: var(--accent); }
 @media (hover: hover) { .invert .btn:hover { color: var(--accent-ink); } }
-:root[data-finish="silver"] .invert .btn::before,
-:root[data-finish="white"] .invert .btn::before { background: #ff4499; }
+:root[data-finish="silver"] .invert .btn::before { background: #ff4499; }
 
 .sec-head { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 40px; align-items: end; }
 .sec-head .eyebrow { grid-column: 1 / -1; }
