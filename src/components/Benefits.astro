@@ -1,0 +1,22 @@
+---
+import { BENEFITS, PLANS } from '../data/card.js';
+const names = Object.fromEntries(PLANS.map((p) => [p.id, p.name]));
+const tag = (plans) => (plans.length === PLANS.length ? 'Every plan' : plans.map((id) => names[id]).join(' & '));
+---
+<section class="benefits curtain" id="benefits" aria-labelledby="benefits-title">
+  <div class="sec-head">
+    <p class="eyebrow" data-reveal-1>Benefits</p>
+    <h2 class="h2" id="benefits-title" data-swipe>Cover for the road</h2>
+    <p class="lede" data-reveal-1>Insurance, credits and access that come with the card, with no forms to fill in before you need them.</p>
+  </div>
+  <ul class="benefit-grid" data-reveal>
+    {BENEFITS.map((b, i) => (
+      <li class="benefit">
+        <span class="benefit-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <h3>{b.title}</h3>
+        <p>{b.body}</p>
+        <p class="benefit-tag">{tag(b.plans)}</p>
+      </li>
+    ))}
+  </ul>
+</section>

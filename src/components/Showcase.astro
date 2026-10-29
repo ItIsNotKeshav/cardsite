@@ -1,0 +1,19 @@
+---
+const shows = [
+  ['black', 'Brushed titanium under a diamond-like carbon coat. Shown on pink, because black on black hides it.'],
+  ['silver', 'Bare grade 5 titanium, brushed along its length so the light runs down it in long streaks.'],
+  ['white', 'White ceramic fired over a titanium core: glossy where the others are brushed, and just as heavy.'],
+  ['gold', 'Titanium nitride, the hard gold-coloured coat used on cutting tools, over brushed titanium. Shown on neon blue.'],
+];
+const cap = (s) => s[0].toUpperCase() + s.slice(1);
+---
+<section class="showcase" id="finishes" aria-labelledby="finishes-title">
+  <h2 class="sr-only" id="finishes-title">Every finish</h2>
+  {shows.map(([id, text]) => (
+    <div class="show" data-show={id}>
+      <p class="giant show-word" aria-hidden="true" data-show-word><span class="giant-line"><span data-fit="0.3">{cap(id)}</span></span></p>
+      <div class="corner-l"><h3 class="show-title">{cap(id)}</h3><p class="lede">{text}</p></div>
+      <div class="corner-r"><button class="btn" type="button" data-pick={id}>Choose {id}</button></div>
+    </div>
+  ))}
+</section>

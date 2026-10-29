@@ -1,0 +1,26 @@
+---
+import { FEES, PLANS } from '../data/card.js';
+---
+<section class="fees curtain" id="fees" aria-labelledby="fees-title">
+  <div class="sec-head">
+    <p class="eyebrow" data-reveal-1>Rates & fees</p>
+    <h2 class="h2" id="fees-title" data-swipe>Nothing in small print</h2>
+    <p class="lede" data-reveal-1>Every rate and fee, for every plan, in one table.</p>
+  </div>
+  <div class="fee-wrap" data-reveal-1>
+    <table class="fee-table">
+      <thead>
+        <tr><th scope="col"><span class="sr-only">Rate or fee</span></th>{PLANS.map((p) => <th scope="col">{p.name}</th>)}</tr>
+      </thead>
+      <tbody>
+        {FEES.map((row) => (
+          <tr>
+            <th scope="row">{row.label}</th>
+            {row.all ? <td colspan={PLANS.length} class="fee-all">{row.all}</td> : row.values.map((v, i) => <td data-plan-label={PLANS[i].name}>{v}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="fine" data-reveal-1>Rates shown are illustrative for a design concept and are not an offer of credit. Variable APRs would move with the Prime Rate, and the rate you’d get would depend on your credit.</p>
+</section>

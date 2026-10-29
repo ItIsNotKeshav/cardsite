@@ -1,0 +1,31 @@
+---
+import { PLANS, CATEGORIES } from '../data/card.js';
+const money = (n) => `$${n.toLocaleString('en-US')}`;
+const top = (p) => {
+  const best = CATEGORIES.reduce((a, c) => (p.rates[c.id] > p.rates[a.id] ? c : a));
+  return `${p.rates[best.id]}% back on ${best.label.toLowerCase()}`;
+};
+---
+<section class="plans curtain invert" id="plans" aria-labelledby="plans-title">
+  <div class="sec-head">
+    <p class="eyebrow" data-reveal-1>Plans</p>
+    <h2 class="h2" id="plans-title" data-swipe>Three ways to carry it</h2>
+    <p class="lede" data-reveal-1>Same titanium, same four finishes. The plan decides how fast the points come in and what comes with them.</p>
+  </div>
+  <div class="plan-grid" data-reveal>
+    {PLANS.map((p) => (
+      <article class:list={['plan', { 'is-featured': p.featured }]}>
+        {p.featured && <p class="plan-flag">Most popular</p>}
+        <h3 class="plan-name">{p.name}</h3>
+        <p class="plan-fee"><span>{p.fee ? money(p.fee) : '$0'}</span> a year</p>
+        <p class="plan-pitch">{p.pitch}</p>
+        <ul class="plan-list">
+          <li><strong>{p.bonus.points.toLocaleString('en-US')} bonus points</strong> after {money(p.bonus.spend)} in {p.bonus.months} months</li>
+          <li>{top(p)}, {p.rates.other}% on everything else</li>
+          {p.perks.map((perk) => <li>{perk}</li>)}
+        </ul>
+        <button class="btn plan-cta" type="button" data-choose-plan={p.id}>See what {p.name} earns</button>
+      </article>
+    ))}
+  </div>
+</section>
