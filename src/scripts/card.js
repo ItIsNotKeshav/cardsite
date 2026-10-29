@@ -213,7 +213,11 @@ const IDENTITY = new THREE.Quaternion();
 export function createCard(canvas, { pose, offset }) {
   const small = Math.min(window.innerWidth, window.innerHeight) < 600;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.75 : 2));
+  // Resolution steps down if frames run long, so a slower phone keeps a steady frame rate instead of stuttering.
+  const RATIOS = [2, 1.75, 1.5, 1.25, 1].filter((r) => r <= Math.min(window.devicePixelRatio, small ? 1.5 : 2));
+  if (!RATIOS.length) RATIOS.push(Math.min(window.devicePixelRatio, 1));
+  let ratioStep = 0;
+  renderer.setPixelRatio(RATIOS[0]);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.shadowMap.enabled = true;
@@ -233,9 +237,10 @@ export function createCard(canvas, { pose, offset }) {
   const caster = new THREE.DirectionalLight(0xffffff, 0.25);
   caster.position.set(-3, 5, 22);
   caster.castShadow = true;
-  caster.shadow.mapSize.setScalar(small ? 1024 : 2048);
-  caster.shadow.radius = small ? 10 : 18;
-  caster.shadow.blurSamples = small ? 12 : 24;
+  // The shadow is soft and far behind the card, so a small map loses nothing you can see.
+  caster.shadow.mapSize.setScalar(small ? 512 : 1024);
+  caster.shadow.radius = small ? 6 : 12;
+  caster.shadow.blurSamples = small ? 8 : 16;
   caster.shadow.bias = -0.0005;
   Object.assign(caster.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 60 });
   scene.add(key, rim, caster);
@@ -562,8 +567,24 @@ export function createCard(canvas, { pose, offset }) {
   let clock = 0;
 
   // Called once a frame from the page's ticker, after the scroll position has been updated.
+  // Average frame time; when it stays over budget, drop a resolution step.
+  const budget = { avg: 1 / 60, since: 0 };
+  function adapt(rawDt) {
+    budget.avg += (Math.min(rawDt, 0.1) - budget.avg) * 0.05;
+    budget.since += rawDt;
+    if (budget.since < 1.5 || budget.avg < 1 / 50 || ratioStep >= RATIOS.length - 1) return;
+    ratioStep++;
+    budget.since = 0;
+    budget.avg = 1 / 60;
+    renderer.setPixelRatio(RATIOS[ratioStep]);
+    size = { w: 0, h: 0 };
+    resize();
+  }
+
   function tick(dt) {
     if (!active) return;
+    // Hidden tabs and the first frames after loading aren't representative of the device.
+    if (dt < 0.25 && clock > 1) adapt(dt);
     dt = Math.min(dt, 1 / 20); // a dropped frame shouldn't make it jump
     clock += dt;
     const t = clock;

@@ -7,7 +7,7 @@
   --nav-h: 72px;
   --section: clamp(120px, 13vw, 192px);
 
-  --t-h2: clamp(40px, 6vw, 104px);
+  --t-h2: clamp(28px, 6vw, 104px);
   --t-stat: clamp(36px, 3.6vw, 60px);
   --t-lede: clamp(18px, 1.35vw, 22px);
   --t-body: 17px;
@@ -242,7 +242,9 @@ ul { list-style: none; }
 .stage { position: relative; height: 620vh; }
 .stage-mark { position: absolute; top: 450vh; left: 0; }
 .stage-pin { position: sticky; top: 0; height: 100vh; height: 100svh; z-index: 1; overflow: hidden; }
-.panel { position: absolute; inset: 0; }
+.panel { position: absolute; inset: 0; will-change: opacity; }
+/* Moved every frame by the scroll story: kept on their own GPU layers so the giant type is never repainted mid-scroll. */
+.panel-word, .panel [data-corner], .show-word, .hero .giant-line, .marquee-row { will-change: transform; }
 .panel-word {
   position: absolute;
   left: var(--m);
@@ -350,10 +352,6 @@ html:not(.js) .panel { position: relative; height: 100vh; }
 
 /* ---------- Details ---------- */
 
-.spec { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-.spec div { background: var(--tone); border-radius: 24px; padding: 28px 24px 26px; display: grid; gap: 28px; align-content: space-between; min-height: 180px; }
-.spec dt { font-size: var(--t-small); font-weight: 700; color: var(--soft); }
-.spec dd { font-family: var(--display); font-weight: 700; font-size: clamp(18px, 1.5vw, 24px); line-height: 1.15; letter-spacing: -0.02em; }
 
 [data-swipe] { position: relative; }
 .swipe-bar { position: absolute; inset: -4px -6px; background: var(--accent); transform: scaleX(0); transform-origin: left; pointer-events: none; }
@@ -373,7 +371,6 @@ html:not(.js) .panel { position: relative; height: 100vh; }
 @media (max-width: 1099.98px) {
   .nav-links { display: none; }
   .dots { margin-left: auto; }
-  .spec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 1100px) {
   .menu-btn, .menu { display: none !important; }
@@ -389,9 +386,10 @@ html:not(.js) .panel { position: relative; height: 100vh; }
   .dots button { width: 30px; height: 30px; }
   .dot { width: 18px; height: 18px; }
 
+  :root { --t-h2: 9.2vw; }
   .corner-l, .corner-r { left: var(--m); right: var(--m); max-width: none; text-align: left; }
   .hero-lede { top: calc(var(--nav-h) + 12px); bottom: auto; }
-  .hero-actions { justify-content: space-between; }
+  .hero-actions { justify-content: space-between; flex-wrap: wrap; gap: 12px 20px; }
 
   .panel .corner-l { bottom: auto; top: calc(var(--nav-h) + 8px); max-width: none; font-size: 15px; }
   .panel .corner-r { bottom: 20px; }
@@ -404,7 +402,6 @@ html:not(.js) .panel { position: relative; height: 100vh; }
   .finish { padding: 9px 12px; }
   .engrave input { min-height: 48px; }
 
-  .spec div { min-height: 140px; padding: 20px 18px; }
   .footer-bottom { flex-direction: column; }
 }
 
