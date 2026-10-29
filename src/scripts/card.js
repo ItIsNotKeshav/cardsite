@@ -207,12 +207,28 @@ function drawBack(canvas, f, name) {
 // Frame-rate independent easing: the same feel at 60, 90 or 120 Hz.
 const damp = (from, to, lambda, dt) => from + (to - from) * (1 - Math.exp(-lambda * dt));
 
+// A critically damped spring: eases in and out, never overshoots, and if the target moves mid-way
+// it carries its speed into the new path instead of snapping. Returns [value, velocity].
+function spring(value, goal, velocity, smoothTime, dt) {
+  const omega = 2 / smoothTime;
+  const x = omega * dt;
+  const decay = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+  const change = value - goal;
+  const temp = (velocity + omega * change) * dt;
+  return [goal + (change + temp) * decay, (velocity - omega * temp) * decay];
+}
+// How long the card takes to settle into a new section's pose, in seconds (roughly).
+const SETTLE = { x: 0.55, y: 0.55, s: 0.6, rx: 0.6, ry: 0.75, rz: 0.6, explode: 0.5, idle: 0.8 };
+
 const X_AXIS = new THREE.Vector3(1, 0, 0);
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
 const IDENTITY = new THREE.Quaternion();
 
-// pose and offset are owned by the page's scroll story; the card only reads them each frame.
-export function createCard(canvas, { pose, offset }) {
+// target (the pose for the current section) and offset (intro and finish spin) are owned by the page.
+// The card follows target on its own clock, so it moves the same however fast you scroll.
+export function createCard(canvas, { target, offset }) {
+  const pose = { ...target };
+  const poseVel = Object.fromEntries(Object.keys(target).map((k) => [k, 0]));
   const small = Math.min(window.innerWidth, window.innerHeight) < 600;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   // Resolution steps down if frames run long, so a slower phone keeps a steady frame rate instead of stuttering.
@@ -590,6 +606,14 @@ export function createCard(canvas, { pose, offset }) {
     dt = Math.min(dt, 1 / 20); // a dropped frame shouldn't make it jump
     clock += dt;
     const t = clock;
+
+    for (const k in target) {
+      if (!motion) {
+        pose[k] = target[k];
+        continue;
+      }
+      [pose[k], poseVel[k]] = spring(pose[k], target[k], poseVel[k], SETTLE[k] ?? 0.6, dt);
+    }
 
     pointer.x = damp(pointer.x, pointer.tx, 3.5, dt);
     pointer.y = damp(pointer.y, pointer.ty, 3.5, dt);
